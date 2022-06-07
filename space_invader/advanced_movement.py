@@ -23,10 +23,10 @@ v_max = 1.5
 
 pygame.display.set_icon(icon)
 
-def player_display(x_pos, y_pos):
+def player_display():
     screen.blit(player, (x_pos, y_pos))
 
-def acceleration(x_acc, y_acc):
+def acceleration():
     if keyboard.is_pressed("left arrow"):
         if x_acc > -v_max:
             x_acc = -acc
@@ -56,8 +56,6 @@ def deceleration(x_vel, y_vel):
 while running:
     x_acc = 0
     y_acc = 0
-    #deceleration(x_vel, y_vel)
-    #acceleration(x_acc, y_acc)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -66,7 +64,7 @@ while running:
             x_acc = 0
         else:
             x_acc = -acc
-    if keyboard.is_pressed("right arrow"):
+    elif keyboard.is_pressed("right arrow"):
         if keyboard.is_pressed("left arrow"):
             x_acc = 0
         else:
@@ -76,7 +74,7 @@ while running:
             y_acc = 0
         else:
             y_acc = -acc
-    if keyboard.is_pressed("down arrow"):
+    elif keyboard.is_pressed("down arrow"):
         if keyboard.is_pressed("up arrow"):
             y_acc = 0
         else:
@@ -111,5 +109,5 @@ while running:
         y_pos += y_vel
 
     screen.fill((255, 255, 255))
-    player_display(x_pos, y_pos)
+    player_display()
     pygame.display.update()
