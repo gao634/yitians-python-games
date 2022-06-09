@@ -1,6 +1,7 @@
 import pygame
 import random
 import math
+import Player from player_obj
 
 pygame.init()
 screen = pygame.display.set_mode((800, 600))
@@ -8,11 +9,8 @@ running = True
 pygame.display.set_caption("Space Invaders")
 icon = pygame.image.load('001-spaceship.png')
 
-player = pygame.image.load('001-spaceship.png')
-playerX = 370
-playerY = 480
-x_vel = 0.3
-x_change = 0
+player = Player('001-spaceship.png', 370, 480)
+
 
 score_value = 0
 font_s = pygame.font.Font('freesansbold.ttf', 32)
