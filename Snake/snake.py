@@ -28,6 +28,7 @@ class cube(object):
         pygame.draw.rect(surface, self.color, (i*dis + 1, j*dis, dis-2, dis-2))
 
 class snake(object):
+    global flag
     # list of cube objects
     body = []
     # 2d list of ordered pairs (dirnx, dirny) where every element represents a coordinate
@@ -46,21 +47,25 @@ class snake(object):
             keys = pygame.key.get_pressed()
             for key in keys:
                 if keys[pygame.K_LEFT]:
-                    self.dirnx = -1
-                    self.dirny = 0
-                    self.turns[self.head.pos[:]] = [self.dirnx, self.dirny]
+                    if self.dirnx != 1:
+                        self.dirnx = -1
+                        self.dirny = 0
+                        self.turns[self.head.pos[:]] = [self.dirnx, self.dirny]
                 elif keys[pygame.K_RIGHT]:
-                    self.dirnx = 1
-                    self.dirny = 0
-                    self.turns[self.head.pos[:]] = [self.dirnx, self.dirny]
+                    if self.dirnx != -1:
+                        self.dirnx = 1
+                        self.dirny = 0
+                        self.turns[self.head.pos[:]] = [self.dirnx, self.dirny]
                 elif keys[pygame.K_UP]:
-                    self.dirnx = 0
-                    self.dirny = -1
-                    self.turns[self.head.pos[:]] = [self.dirnx, self.dirny]
+                    if self.dirny != 1:
+                        self.dirnx = 0
+                        self.dirny = -1
+                        self.turns[self.head.pos[:]] = [self.dirnx, self.dirny]
                 elif keys[pygame.K_DOWN]:
-                    self.dirnx = 0
-                    self.dirny = 1
-                    self.turns[self.head.pos[:]] = [self.dirnx, self.dirny]
+                    if self.dirny != -1:
+                        self.dirnx = 0
+                        self.dirny = 1
+                        self.turns[self.head.pos[:]] = [self.dirnx, self.dirny]
 
         for i, c in enumerate(self.body):
             p = c.pos[:]
@@ -71,11 +76,21 @@ class snake(object):
                     self.turns.pop(p)
             else:
                 # cases where it hits the edge it tps to other side
-                if c.dirnx == -1 and c.pos[0] <= 0: c.pos = (c.rows-1, c.pos[1])
-                elif c.dirnx == 1 and c.pos[0] >= c.rows - 1: c.pos = (0, c.pos[1])
-                elif c.dirny == 1 and c.pos[1] >= c.rows - 1: c.pos = (c.pos[0], 0)
-                elif c.dirny == -1 and c.pos[1] <= 0: c.pos = (c.pos[0], c.rows - 1)
-                else: c.move(c.dirnx, c.dirny)
+                if c.dirnx == -1 and c.pos[0] <= 0:
+                    c.pos = (c.rows-1, c.pos[1])
+                    #flag = False
+                elif c.dirnx == 1 and c.pos[0] >= c.rows - 1:
+                    c.pos = (0, c.pos[1])
+                    #flag = False
+                elif c.dirny == 1 and c.pos[1] >= c.rows - 1:
+                    #flag = False
+                    c.pos = (c.pos[0], 0)
+                elif c.dirny == -1 and c.pos[1] <= 0:
+                    #flag = False
+                    c.pos = (c.pos[0], c.rows - 1)
+                else:
+                    c.move(c.dirnx, c.dirny)
+
 
     def addCube(self):
         tail = self.body[-1]
@@ -125,9 +140,9 @@ def randomSnack (item):
 
     return (x, y)
 def main():
-    global width, rows, s, snack
+    global width, rows, s, snack, flag
     width = 600
-    rows = 30
+    rows = 20
     win = pygame.display.set_mode((width, width))
     s = snake((255, 0, 0), (10, 10))
     flag = True
@@ -136,12 +151,11 @@ def main():
 
     while flag:
         pygame.time.delay(50)
-        clock.tick(10)
+        clock.tick(12)
         redrawWindow(win)
         s.move()
         if s.body[0].pos == snack.pos:
             s.addCube()
             snack = cube(randomSnack(s), (0, 255, 0))
-    pass
 
 main()
