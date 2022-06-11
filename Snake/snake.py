@@ -4,14 +4,17 @@ import math
 
 
 class cube(object):
-    rows = 20
-    w = 500
+    global width, rows
+    #rows = 20
+    #w = 500
     def __init__(self, start, color = (255, 0, 0)):
         #pos is coordinate tuple
         self.pos = start
         self.dirnx = 1
         self.dirny = 0
         self.color = color
+        self.w = width
+        self.rows = rows
 
     def move(self, dirnx, dirny):
         self.dirnx = dirnx
@@ -47,15 +50,15 @@ class snake(object):
                     self.dirnx = -1
                     self.dirny = 0
                     self.turns[self.head.pos[:]] = [self.dirnx, self.dirny]
-                if keys[pygame.K_RIGHT]:
+                elif keys[pygame.K_RIGHT]:
                     self.dirnx = 1
                     self.dirny = 0
                     self.turns[self.head.pos[:]] = [self.dirnx, self.dirny]
-                if keys[pygame.K_UP]:
+                elif keys[pygame.K_UP]:
                     self.dirnx = 0
                     self.dirny = -1
                     self.turns[self.head.pos[:]] = [self.dirnx, self.dirny]
-                if keys[pygame.K_DOWN]:
+                elif keys[pygame.K_DOWN]:
                     self.dirnx = 0
                     self.dirny = 1
                     self.turns[self.head.pos[:]] = [self.dirnx, self.dirny]
@@ -101,8 +104,8 @@ def redrawWindow(surface):
 
 def main():
     global width, rows, s
-    width = 500
-    rows = 20
+    width = 600
+    rows = 40
     win = pygame.display.set_mode((width, width))
     s = snake((255, 0, 0), (10, 10))
     flag = True
@@ -111,7 +114,7 @@ def main():
 
     while flag:
         pygame.time.delay(50)
-        clock.tick(10)
+        clock.tick(20)
         redrawWindow(win)
         s.move()
     pass
