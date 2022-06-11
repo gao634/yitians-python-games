@@ -29,7 +29,7 @@ class snake(object):
     # list of cube objects
     body = []
     # 2d list of ordered pairs (dirnx, dirny) where every element represents a coordinate
-    turns = []
+    turns = {}
     def __init__(self, color, pos):
         self.color = color
         self.head = cube(pos)
