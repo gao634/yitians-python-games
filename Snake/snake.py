@@ -157,5 +157,9 @@ def main():
         if s.body[0].pos == snack.pos:
             s.addCube()
             snack = cube(randomSnack(s), (0, 255, 0))
+        for i, c in s.body:
+            if i == 0 and s.body[0].pos == c.pos:
+                flag = False
+                break
 
 main()
