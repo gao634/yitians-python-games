@@ -28,7 +28,6 @@ class cube(object):
         pygame.draw.rect(surface, self.color, (i*dis + 1, j*dis, dis-2, dis-2))
 
 class snake(object):
-    global flag
     # list of cube objects
     body = []
     # 2d list of ordered pairs (dirnx, dirny) where every element represents a coordinate
@@ -42,7 +41,7 @@ class snake(object):
     def move(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quite()
+                pygame.quit()
 
             keys = pygame.key.get_pressed()
             for key in keys:
@@ -77,19 +76,20 @@ class snake(object):
             else:
                 # cases where it hits the edge it tps to other side
                 if c.dirnx == -1 and c.pos[0] <= 0:
+                    return False
                     c.pos = (c.rows-1, c.pos[1])
-                    #flag = False
                 elif c.dirnx == 1 and c.pos[0] >= c.rows - 1:
+                    return False
                     c.pos = (0, c.pos[1])
-                    #flag = False
                 elif c.dirny == 1 and c.pos[1] >= c.rows - 1:
-                    #flag = False
+                    return False
                     c.pos = (c.pos[0], 0)
                 elif c.dirny == -1 and c.pos[1] <= 0:
-                    #flag = False
+                    return False
                     c.pos = (c.pos[0], c.rows - 1)
                 else:
                     c.move(c.dirnx, c.dirny)
+        return True
 
 
     def addCube(self):
@@ -140,25 +140,25 @@ def randomSnack (item):
 
     return (x, y)
 def main():
-    global width, rows, s, snack, flag
+    global width, rows, s, snack
     width = 600
-    rows = 20
+    rows = 15
     win = pygame.display.set_mode((width, width))
-    s = snake((255, 0, 0), (10, 10))
+    s = snake((255, 0, 0), (rows//2, rows//2))
     flag = True
     snack = cube(randomSnack(s), (0, 255, 0))
     clock = pygame.time.Clock()
 
     while flag:
-        pygame.time.delay(50)
-        clock.tick(12)
+        #pygame.time.delay(50)
+        clock.tick(10)
         redrawWindow(win)
-        s.move()
+        flag = s.move()
         if s.body[0].pos == snack.pos:
             s.addCube()
             snack = cube(randomSnack(s), (0, 255, 0))
-        for i, c in s.body:
-            if i == 0 and s.body[0].pos == c.pos:
+        for i, c in enumerate(s.body):
+            if i != 0 and s.body[0].pos == c.pos:
                 flag = False
                 break
 
