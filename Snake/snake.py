@@ -10,7 +10,7 @@ class cube(object):
     def __init__(self, start, color = (255, 0, 0)):
         #pos is coordinate tuple
         self.pos = start
-        self.dirnx = 1
+        self.dirnx = 0
         self.dirny = 0
         self.color = color
         self.w = width
@@ -32,18 +32,34 @@ class snake(object):
     body = []
     # 2d list of ordered pairs (dirnx, dirny) where every element represents a coordinate
     turns = {}
+    moves = []
+    limit = 5
     def __init__(self, color, pos):
         self.color = color
         self.head = cube(pos, (226, 135, 67))
         self.body.append(self.head)
         self.dirnx = 0
-        self.dirny = 1
+        self.dirny = 0
+    def moveQueue(self, move):
+        if len(self.moves) < self.limit:
+            self.moves.append(move)
     def move(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
 
             keys = pygame.key.get_pressed()
+            """"""
+            for key in keys:
+                if keys[pygame.K_LEFT]:
+                    self.moveQueue(pygame.K_LEFT)
+                elif keys[pygame.K_RIGHT]:
+                    self.moveQueue(pygame.K_RIGHT)
+                elif keys[pygame.K_UP]:
+                    self.moveQueue(pygame.K_UP)
+                elif keys[pygame.K_DOWN]:
+                    self.moveQueue(pygame.K_DOWN)
+            """"""
             for key in keys:
                 if keys[pygame.K_LEFT]:
                     if self.dirnx != 1:
@@ -65,7 +81,30 @@ class snake(object):
                         self.dirnx = 0
                         self.dirny = 1
                         self.turns[self.head.pos[:]] = [self.dirnx, self.dirny]
-
+        """"""
+        if len(self.moves) > 0:
+            if self.moves[0] == pygame.K_LEFT:
+                if self.dirnx != 1:
+                    self.dirnx = -1
+                    self.dirny = 0
+                    self.turns[self.head.pos[:]] = [self.dirnx, self.dirny]
+            elif self.moves[0] == pygame.K_RIGHT:
+                if self.dirnx != -1:
+                    self.dirnx = 1
+                    self.dirny = 0
+                    self.turns[self.head.pos[:]] = [self.dirnx, self.dirny]
+            elif self.moves[0] == pygame.K_UP:
+                if self.dirny != 1:
+                    self.dirnx = 0
+                    self.dirny = -1
+                    self.turns[self.head.pos[:]] = [self.dirnx, self.dirny]
+            elif self.moves[0] == pygame.K_DOWN:
+                if self.dirny != -1:
+                    self.dirnx = 0
+                    self.dirny = 1
+                    self.turns[self.head.pos[:]] = [self.dirnx, self.dirny]
+            self.moves.pop(0)
+        """"""
         for i, c in enumerate(self.body):
             p = c.pos[:]
             if p in self.turns:
@@ -151,7 +190,7 @@ def main():
 
     while flag:
         #pygame.time.delay(50)
-        clock.tick(10)
+        clock.tick(8)
         redrawWindow(win)
         flag = s.move()
         if s.body[0].pos == snack.pos:
