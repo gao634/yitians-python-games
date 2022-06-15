@@ -198,7 +198,7 @@ def main():
         clock.tick(fps)
         #print(t1)
         tick += 1
-        if tick == 3:
+        if tick == 4:
             flag = s.move()
             tick = 0
         if s.body[0].pos == snack.pos:
@@ -208,5 +208,5 @@ def main():
             if i != 0 and s.body[0].pos == c.pos:
                 flag = False
                 break
-    print("Score:",len(s.body))
+    print("Score:", len(s.body))
 main()
