@@ -43,7 +43,7 @@ class snake(object):
     def moveQueue(self, move):
         if len(self.moves) < self.limit:
             self.moves.append(move)
-    def checkMove(self):
+    def getMove(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -184,18 +184,26 @@ def main():
     global width, rows, s, snack
     width = 600
     rows = 15
+    fps = 30
     win = pygame.display.set_mode((width, width))
     s = snake((255, 0, 0), (rows//2, rows//2))
     flag = True
     snack = cube(randomSnack(s), (0, 255, 0))
     clock = pygame.time.Clock()
-    t0 = clock.get_time()
+    tick1 = 1
+    tick2 = 1
+
     while flag:
         #pygame.time.delay(50)
-        clock.tick(16)
         redrawWindow(win)
-
-        flag = s.move()
+        s.getMove()
+        clock.tick(fps)
+        #print(t1)
+        tick1 *= -1
+        if tick1 == 1:
+            tick2 *= -1
+        if tick1 + tick2 == 2:
+            flag = s.move()
         if s.body[0].pos == snack.pos:
             s.addCube()
             snack = cube(randomSnack(s), (0, 255, 0))
@@ -203,5 +211,5 @@ def main():
             if i != 0 and s.body[0].pos == c.pos:
                 flag = False
                 break
-
+    print("Score:",len(s.body))
 main()
