@@ -190,20 +190,17 @@ def main():
     flag = True
     snack = cube(randomSnack(s), (0, 255, 0))
     clock = pygame.time.Clock()
-    tick1 = 1
-    tick2 = 1
-
+    tick = 0
     while flag:
         #pygame.time.delay(50)
         redrawWindow(win)
         s.getMove()
         clock.tick(fps)
         #print(t1)
-        tick1 *= -1
-        if tick1 == 1:
-            tick2 *= -1
-        if tick1 + tick2 == 2:
+        tick += 1
+        if tick == 3:
             flag = s.move()
+            tick = 0
         if s.body[0].pos == snack.pos:
             s.addCube()
             snack = cube(randomSnack(s), (0, 255, 0))
