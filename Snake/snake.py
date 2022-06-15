@@ -43,7 +43,7 @@ class snake(object):
     def moveQueue(self, move):
         if len(self.moves) < self.limit:
             self.moves.append(move)
-    def move(self):
+    def checkMove(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -105,6 +105,8 @@ class snake(object):
                     self.turns[self.head.pos[:]] = [self.dirnx, self.dirny]
             self.moves.pop(0)
         """"""
+    def move(self):
+
         for i, c in enumerate(self.body):
             p = c.pos[:]
             if p in self.turns:
@@ -187,11 +189,12 @@ def main():
     flag = True
     snack = cube(randomSnack(s), (0, 255, 0))
     clock = pygame.time.Clock()
-
+    t0 = clock.get_time()
     while flag:
         #pygame.time.delay(50)
-        clock.tick(8)
+        clock.tick(16)
         redrawWindow(win)
+
         flag = s.move()
         if s.body[0].pos == snack.pos:
             s.addCube()
