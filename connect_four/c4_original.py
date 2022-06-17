@@ -1,42 +1,13 @@
 import pygame
 import keyboard
 
+current = 0
 class player(object):
-    global current
     pieces = []
     column = 3
     def __init__(self, color, num):
         self.color = color
         self.num = num
-        self.current = current
-    def place(self):
-        print("called")
-        for i in range(6):
-            if board[self.column, i] != 0:
-                board[self.column, i - 1] = self.num
-                self.pieces.append(self.column, i - 1)
-            elif i == 6:
-                board[self.column, i] = self.num
-                self.pieces.append(self.column, i)
-    def turn(self):
-        print(current)
-        pygame.draw.circle(window, self.color, (self.column * size + size / 2, size / 2), size * 2 / 5)
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-
-            keys = pygame.key.get_pressed()
-
-        if keyboard.is_pressed("left arrow"):
-            if self.column > 0:
-                self.column -= 1
-        if keyboard.is_pressed("right arrow"):
-            if self.column < 6:
-                self.column += 1
-        if keyboard.is_pressed("space"):
-            if board[self.column, 0] == 0:
-                self.place()
-                self.current = self.num - 2
 
 def create_board():
     b = {}
@@ -53,18 +24,45 @@ def draw_circles():
                 pygame.draw.circle(window, players[0].color, (i * size + size/2, (j + 1) * size + size/2), size * 2/5)
             if board[(i, j)] == players[1].num:
                 pygame.draw.circle(window, players[1].color, (i * size + size/2, (j + 1) * size + size/2), size * 2/5)
+def place(player):
+    print("called")
+    for i in range(6):
+        if board[player.column, i] != 0:
+            board[player.column, i - 1] = player.num
+            player.pieces.append(player.column, i - 1)
+        elif i == 6:
+            board[player.column, i] = player.num
+            player.pieces.append(player.column, i)
+def turn(player):
+    global current
+    #print(current)
+    pygame.draw.circle(window, player.color, (player.column * size + size / 2, size / 2), size * 2 / 5)
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
 
+        keys = pygame.key.get_pressed()
+
+    if keyboard.is_pressed("left arrow"):
+        if player.column > 0:
+            player.column -= 1
+    if keyboard.is_pressed("right arrow"):
+        if player.column < 6:
+            player.column += 1
+    if keyboard.is_pressed("space"):
+        if board[player.column, 0] == 0:
+            place(player)
+            current = player.num - 2
 def redraw_window():
     window.fill((0, 0, 255))
     draw_circles()
-    players[current].turn()
+    turn(players[current])
     pygame.display.update()
 def main():
     global board, window, size, current, players
     size = 100
     window = pygame.display.set_mode((7 * size, 7 * size))
     board = create_board()
-    current = 0
     print(board)
     flag = True
     clock = pygame.time.Clock()
