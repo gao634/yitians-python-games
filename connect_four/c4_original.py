@@ -25,14 +25,15 @@ def draw_circles():
             if board[(i, j)] == players[1].num:
                 pygame.draw.circle(window, players[1].color, (i * size + size/2, (j + 1) * size + size/2), size * 2/5)
 def place(player):
-    print("called")
+    #print("called")
     for i in range(6):
         if board[player.column, i] != 0:
             board[player.column, i - 1] = player.num
-            player.pieces.append(player.column, i - 1)
-        elif i == 6:
+            player.pieces.append((player.column, i - 1))
+            break
+        elif i == 5:
             board[player.column, i] = player.num
-            player.pieces.append(player.column, i)
+            player.pieces.append((player.column, i))
 def turn(player):
     global current
     #print(current)
@@ -53,6 +54,8 @@ def turn(player):
         if board[player.column, 0] == 0:
             place(player)
             current = player.num - 2
+            pygame.time.wait(250)
+            #print(board)
 def redraw_window():
     window.fill((0, 0, 255))
     draw_circles()
