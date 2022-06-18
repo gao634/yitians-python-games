@@ -47,14 +47,17 @@ def turn(player):
     if keyboard.is_pressed("left arrow"):
         if player.column > 0:
             player.column -= 1
+            #pygame.time.wait(250)
     if keyboard.is_pressed("right arrow"):
         if player.column < 6:
             player.column += 1
+            #pygame.time.wait(250)
     if keyboard.is_pressed("space"):
         if board[player.column, 0] == 0:
             place(player)
             current = player.num - 2
-            pygame.time.wait(250)
+            players[current].column = 3
+            #pygame.time.wait(250)
             #print(board)
 def redraw_window():
     window.fill((0, 0, 255))
@@ -75,7 +78,7 @@ def main():
     players[0] = p1
     players[1] = p2
     while flag:
-        clock.tick(10)
+        clock.tick(5)
         redraw_window()
 
 main()
