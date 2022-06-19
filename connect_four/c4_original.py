@@ -64,6 +64,9 @@ def redraw_window():
     draw_circles()
     turn(players[current])
     pygame.display.update()
+def check_win(player):
+    if len(player.pieces) >= 4:
+
 def main():
     global board, window, size, current, players
     size = 100
