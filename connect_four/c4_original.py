@@ -70,7 +70,10 @@ def check_win(player):
             for piece2 in player.pieces:
                 if pow(piece1[0] - piece2[0], 2) == 1 or pow(piece1[1] - piece2[1], 2) == 1:
 
-
+def travel(player, piece, x, y):
+    coord = (piece[0] + x, piece[1] + y)
+    if board[coord] == player.num:
+        return coord
 def main():
     global board, window, size, current, players
     size = 100
