@@ -66,6 +66,10 @@ def redraw_window():
     pygame.display.update()
 def check_win(player):
     if len(player.pieces) >= 4:
+        for piece1 in player.pieces:
+            for piece2 in player.pieces:
+                if pow(piece1[0] - piece2[0], 2) == 1 or pow(piece1[1] - piece2[1], 2) == 1:
+
 
 def main():
     global board, window, size, current, players
