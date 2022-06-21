@@ -74,6 +74,7 @@ def travel(player, piece, x, y):
     coord = (piece[0] + x, piece[1] + y)
     if board[coord] == player.num:
         return coord
+    return (-1, -1)
 def main():
     global board, window, size, current, players
     size = 100
