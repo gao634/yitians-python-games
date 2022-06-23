@@ -25,15 +25,22 @@ def draw_circles():
             if board[(i, j)] == players[1].num:
                 pygame.draw.circle(window, players[1].color, (i * size + size/2, (j + 1) * size + size/2), size * 2/5)
 def place(player):
-    #print("called")
+    print("called", player.num)
     for i in range(6):
         if board[player.column, i] != 0:
             board[player.column, i - 1] = player.num
-            player.pieces.append((player.column, i - 1))
+            if player.num == 1:
+                p1_pieces.append((player.column, i - 1))
+            else:
+                p2_pieces.append((player.column, i - 1))
             break
         elif i == 5:
             board[player.column, i] = player.num
-            player.pieces.append((player.column, i))
+            if player.num == 1:
+                p1_pieces.append((player.column, 5))
+            else:
+                p2_pieces.append((player.column, 5))
+    print(player.pieces)
 def turn(player):
     global current
     #print(current)
@@ -85,8 +92,12 @@ def check_win(player):
                     while check_piece(player, piece2, dx, dy) and count < 4:
                         count += 1
                         new_coord = (new_coord[0] + dx, new_coord[1] + dy)
-    if count >= 4:
-        return True
+                    if count >= 4:
+                        count = 2
+                        return True
+                    else:
+                        count = 2
+    return False
 
 def check_piece(player, coord, x, y):
     if coord[0] < 7 and coord[0] > -1 and coord[1] < 6 and coord[1] > -1:
@@ -94,7 +105,7 @@ def check_piece(player, coord, x, y):
             return True
     return False
 def main():
-    global board, window, size, current, players, flag
+    global board, window, size, current, players, flag, p1_pieces, p2_pieces
     size = 100
     window = pygame.display.set_mode((7 * size, 7 * size))
     board = create_board()
@@ -106,8 +117,12 @@ def main():
     p2 = player((255, 255, 0), 2)
     players[0] = p1
     players[1] = p2
+    p1_pieces = []
+    p2_pieces = []
     while flag:
         clock.tick(5)
+        p1.pieces = p1_pieces
+        p2.pieces = p2_pieces
         redraw_window()
 
 
