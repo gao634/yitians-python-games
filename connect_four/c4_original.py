@@ -75,6 +75,7 @@ def redraw_window():
     turn(players[current])
     pygame.display.update()
 def check_win(player):
+    global flag
     count = 2
     if len(player.pieces) >= 4:
         for piece1 in player.pieces:
@@ -99,7 +100,7 @@ def check_win(player):
                         count += 1
                         new_coord = (new_coord[0] - dx, new_coord[1] - dy)
                     if count >= 4:
-                        count = 2
+                        flag = False
                         return True
                     else:
                         count = 2
