@@ -63,20 +63,38 @@ def redraw_window():
     window.fill((0, 0, 255))
     draw_circles()
     turn(players[current])
+    if check_win(players[current]):
+        flag = False
+        print("player", players[current].num, "wins!")
     pygame.display.update()
 def check_win(player):
+    count = 2
     if len(player.pieces) >= 4:
         for piece1 in player.pieces:
             for piece2 in player.pieces:
                 if pow(piece1[0] - piece2[0], 2) == 1 or pow(piece1[1] - piece2[1], 2) == 1:
+                    dx = piece1[0] - piece2[0]
+                    dy = piece1[1] - piece2[1]
+                    new_coord = piece1
+                    new_coord = (new_coord[0] + dx, new_coord[1] + dy)
+                    while check_piece(player, new_coord, dx, dy) and count < 4:
+                        count += 1
+                        new_coord = (new_coord[0] + dx, new_coord[1] + dy)
+                    new_coord = piece2
+                    new_coord = (new_coord[0] - dx, new_coord[1] - dy)
+                    while check_piece(player, piece2, dx, dy) and count < 4:
+                        count += 1
+                        new_coord = (new_coord[0] + dx, new_coord[1] + dy)
+    if count >= 4:
+        return True
 
-def travel(player, piece, x, y):
-    coord = (piece[0] + x, piece[1] + y)
-    if board[coord] == player.num:
-        return coord
-    return (-1, -1)
+def check_piece(player, coord, x, y):
+    if coord[0] < 7 and coord[0] > -1 and coord[1] < 6 and coord[1] > -1:
+        if board[coord] == player.num:
+            return True
+    return False
 def main():
-    global board, window, size, current, players
+    global board, window, size, current, players, flag
     size = 100
     window = pygame.display.set_mode((7 * size, 7 * size))
     board = create_board()
@@ -91,5 +109,6 @@ def main():
     while flag:
         clock.tick(5)
         redraw_window()
+
 
 main()
