@@ -79,19 +79,25 @@ def check_win(player):
     if len(player.pieces) >= 4:
         for piece1 in player.pieces:
             for piece2 in player.pieces:
-                if pow(piece1[0] - piece2[0], 2) == 1 or pow(piece1[1] - piece2[1], 2) == 1:
+                if piece1 == piece2:
+                    break
+                if pow(piece1[0] - piece2[0], 2) <= 1 and pow(piece1[1] - piece2[1], 2) <= 1:
                     dx = piece1[0] - piece2[0]
                     dy = piece1[1] - piece2[1]
                     new_coord = piece1
+                    print("p1 =", new_coord)
                     new_coord = (new_coord[0] + dx, new_coord[1] + dy)
                     while check_piece(player, new_coord, dx, dy) and count < 4:
+                        print(new_coord)
                         count += 1
                         new_coord = (new_coord[0] + dx, new_coord[1] + dy)
                     new_coord = piece2
+                    print("p2 =", new_coord)
                     new_coord = (new_coord[0] - dx, new_coord[1] - dy)
-                    while check_piece(player, piece2, dx, dy) and count < 4:
+                    while check_piece(player, new_coord, dx, dy) and count < 4:
+                        print(new_coord)
                         count += 1
-                        new_coord = (new_coord[0] + dx, new_coord[1] + dy)
+                        new_coord = (new_coord[0] - dx, new_coord[1] - dy)
                     if count >= 4:
                         count = 2
                         return True
