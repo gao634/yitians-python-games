@@ -55,6 +55,9 @@ def turn(player):
     if keyboard.is_pressed("space"):
         if board[player.column, 0] == 0:
             place(player)
+            if check_win(player):
+                flag = False
+                print("player", player.num, "wins!")
             current = player.num - 2
             players[current].column = 3
             #pygame.time.wait(250)
@@ -63,9 +66,6 @@ def redraw_window():
     window.fill((0, 0, 255))
     draw_circles()
     turn(players[current])
-    if check_win(players[current]):
-        flag = False
-        print("player", players[current].num, "wins!")
     pygame.display.update()
 def check_win(player):
     count = 2
