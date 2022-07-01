@@ -64,7 +64,7 @@ def turn(player):
             place(player)
             if check_win(player):
                 flag = False
-                print("Player", player.num, "wins")
+                print("Player", player.num, "wins!")
             current = player.num - 2
             players[current].column = 3
             #pygame.time.wait(250)
