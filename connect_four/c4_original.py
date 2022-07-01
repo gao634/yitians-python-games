@@ -25,7 +25,7 @@ def draw_circles():
             if board[(i, j)] == players[1].num:
                 pygame.draw.circle(window, players[1].color, (i * size + size/2, (j + 1) * size + size/2), size * 2/5)
 def place(player):
-    print("called", player.num)
+    #print("called", player.num)
     for i in range(6):
         if board[player.column, i] != 0:
             board[player.column, i - 1] = player.num
@@ -40,7 +40,7 @@ def place(player):
                 p1_pieces.append((player.column, 5))
             else:
                 p2_pieces.append((player.column, 5))
-    print(player.pieces)
+    #print(player.pieces)
 def turn(player):
     global current
     #print(current)
@@ -64,7 +64,7 @@ def turn(player):
             place(player)
             if check_win(player):
                 flag = False
-                print("player", player.num, "wins!")
+                print("Player", player.num, "wins!")
             current = player.num - 2
             players[current].column = 3
             #pygame.time.wait(250)
@@ -86,17 +86,17 @@ def check_win(player):
                     dx = piece1[0] - piece2[0]
                     dy = piece1[1] - piece2[1]
                     new_coord = piece1
-                    print("p1 =", new_coord)
+                    #print("p1 =", new_coord)
                     new_coord = (new_coord[0] + dx, new_coord[1] + dy)
                     while check_piece(player, new_coord, dx, dy) and count < 4:
-                        print(new_coord)
+                        #print(new_coord)
                         count += 1
                         new_coord = (new_coord[0] + dx, new_coord[1] + dy)
                     new_coord = piece2
-                    print("p2 =", new_coord)
+                    #print("p2 =", new_coord)
                     new_coord = (new_coord[0] - dx, new_coord[1] - dy)
                     while check_piece(player, new_coord, dx, dy) and count < 4:
-                        print(new_coord)
+                        #print(new_coord)
                         count += 1
                         new_coord = (new_coord[0] - dx, new_coord[1] - dy)
                     if count >= 4:
@@ -116,7 +116,7 @@ def main():
     size = 100
     window = pygame.display.set_mode((7 * size, 7 * size))
     board = create_board()
-    print(board)
+    #print(board)
     flag = True
     clock = pygame.time.Clock()
     players = [0, 0]
