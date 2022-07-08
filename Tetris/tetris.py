@@ -36,6 +36,24 @@ class Piece(object):
         board[self.x + self.shape[1][0], self.y + self.shape[1][1]] = 3
         board[self.x + self.shape[2][0], self.y + self.shape[2][1]] = 4
 
+    def left_turn(self):
+    def right_turn(self):
+    def soft_drop(self):
+    def place(self):
+
+def input(piece):
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+    for key in keys:
+        if keys[pygame.K_LEFT]:
+            piece.left_turn()
+        elif keys[pygame.K_RIGHT]:
+            piece.right_turn()
+        elif keys[pygame.K_SPACE]:
+            piece.place()
+        elif keys[pygame.K_DOWN]:
+            piece.soft_drop
 test = Piece(6)
 test.generation()
 print(board)
