@@ -37,7 +37,13 @@ class Piece(object):
         board[self.x + self.shape[2][0], self.y + self.shape[2][1]] = 4
 
     def left_turn(self):
+        placer = self.orientation[0]
+        self.orientation[0] = -self.orientation[1]
+        self.orientation[1] = placer
     def right_turn(self):
+        placer = self.orientation[0]
+        self.orientation[0] = self.orientation[1]
+        self.orientation[1] = -placer
     def soft_drop(self):
     def place(self):
 
@@ -55,6 +61,7 @@ def input(piece):
             piece.place()
         elif keys[pygame.K_DOWN]:
             piece.soft_drop
+
 test = Piece(6)
 test.generation()
 print(board)
