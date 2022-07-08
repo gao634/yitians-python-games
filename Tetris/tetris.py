@@ -41,6 +41,7 @@ class Piece(object):
     def soft_drop(self):
     def place(self):
 
+
 def input(piece):
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
