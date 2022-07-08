@@ -29,6 +29,7 @@ class Piece(object):
         self.orientation = (0, 1)
         self.x = self.shape[3][0]
         self.y = self.shape[3][1]
+        self.placed = False
 
     def generation(self):
         board[self.x, self.y] = 1
@@ -45,7 +46,18 @@ class Piece(object):
         self.orientation[0] = self.orientation[1]
         self.orientation[1] = -placer
     def soft_drop(self):
+        self.y -= 1
+        if not self.valid():
+            self.y += 1
+
     def place(self):
+        while self.valid():
+            self.y -= 1
+        self.y += 1
+        self.placed = true
+
+    def valid(self):
+        return True
 
 
 def input(piece):
