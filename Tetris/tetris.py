@@ -33,18 +33,25 @@ class Piece(object):
 
     def generation(self):
         board[self.x, self.y] = 1
-        board[self.x + self.shape[0][0], self.y + self.shape[0][1]] = 2
-        board[self.x + self.shape[1][0], self.y + self.shape[1][1]] = 3
-        board[self.x + self.shape[2][0], self.y + self.shape[2][1]] = 4
+        if self.orientation[0] == 0:
+            board[self.x + self.shape[0][0] * self.orientation[1], self.y + self.shape[0][1] * self.orientation[1]] = 2
+            board[self.x + self.shape[1][0] * self.orientation[1], self.y + self.shape[1][1] * self.orientation[1]] = 3
+            board[self.x + self.shape[2][0] * self.orientation[1], self.y + self.shape[2][1] * self.orientation[1]] = 4
+        else:
+            board[self.x + self.shape[0][1] * self.orientation[1], self.y + self.shape[0][0] * self.orientation[1]] = 2
+            board[self.x + self.shape[1][1] * self.orientation[1], self.y + self.shape[1][0] * self.orientation[1]] = 3
+            board[self.x + self.shape[2][1] * self.orientation[1], self.y + self.shape[2][0] * self.orientation[1]] = 4
 
     def left_turn(self):
         placer = self.orientation[0]
         self.orientation[0] = -self.orientation[1]
         self.orientation[1] = placer
+
     def right_turn(self):
         placer = self.orientation[0]
         self.orientation[0] = self.orientation[1]
         self.orientation[1] = -placer
+
     def soft_drop(self):
         self.y -= 1
         if not self.valid():
