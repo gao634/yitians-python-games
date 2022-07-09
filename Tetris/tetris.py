@@ -74,6 +74,7 @@ def input(piece):
     for key in keys:
         if keys[pygame.K_LEFT]:
             piece.left_turn()
+            print(board)
         elif keys[pygame.K_RIGHT]:
             piece.right_turn()
         elif keys[pygame.K_SPACE]:
@@ -81,6 +82,10 @@ def input(piece):
         elif keys[pygame.K_DOWN]:
             piece.soft_drop
 
+flag = True
 test = Piece(6)
 test.generation()
 print(board)
+while flag:
+    input(test)
+
