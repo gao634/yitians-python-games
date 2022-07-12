@@ -26,7 +26,7 @@ class Piece(object):
     def __init__(self, shape):
         self.color = shape_colors[shape]
         self.shape = shapes[shape]
-        self.orientation = (0, 1)
+        self.orientation = [0, 1]
         self.x = self.shape[3][0]
         self.y = self.shape[3][1]
         self.placed = False
@@ -44,7 +44,7 @@ class Piece(object):
 
     def left_turn(self):
         placer = self.orientation[0]
-        self.orientation[0] = -self.orientation[1]
+        self.orientation[0] = self.orientation[1]
         self.orientation[1] = placer
 
     def right_turn(self):
@@ -66,11 +66,37 @@ class Piece(object):
     def valid(self):
         return True
 
+def drawGrid(surface):
+
+    x = (screen_width - play_width) / 2
+    y = (screen_height - play_height) / 2
+    x_edge1 = x
+    y_edge1 = y
+    x_edge2 = screen_width - x
+    y_edge2 = screen_height - y
+
+    pygame.draw.line(surface, (255, 255, 255), (x, y_edge1), (x, y_edge2))
+    pygame.draw.line(surface, (255, 255, 255), (x_edge1, y), (x_edge2, y))
+
+    for l in range(10):
+        x = x + block_size
+        y = y + block_size
+        pygame.draw.line(surface, (255, 255, 255), (x, y_edge1), (x, y_edge2))
+        pygame.draw.line(surface, (255, 255, 255), (x_edge1, y), (x_edge2, y))
+        y = y + block_size
+        pygame.draw.line(surface, (255, 255, 255), (x_edge1, y), (x_edge2, y))
+
+def redrawWindow(surface):
+    surface.fill((0, 0, 0))
+    drawGrid(surface)
+    pygame.display.update()
 
 def input(piece):
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
+            flag = False
             pygame.quit()
+    keys = pygame.key.get_pressed()
     for key in keys:
         if keys[pygame.K_LEFT]:
             piece.left_turn()
@@ -86,6 +112,8 @@ flag = True
 test = Piece(6)
 test.generation()
 print(board)
+surface = pygame.display.set_mode((screen_width, screen_height))
 while flag:
+    redrawWindow(surface)
     input(test)
 
