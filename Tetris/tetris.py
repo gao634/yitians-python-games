@@ -59,9 +59,11 @@ class Piece(object):
         self.orientation[1] = -placer
 
     def soft_drop(self):
+        print(self.y)
         self.y -= 1
-        if not self.valid():
-            self.y += 1
+        print(self.y)
+        #if not self.valid():
+        #    self.y += 1
 
     def place(self):
         while self.valid():
@@ -90,6 +92,7 @@ def drawGrid(surface):
 
 def redrawWindow(surface):
     surface.fill((0, 0, 0))
+    current.generation()
     drawGrid(surface)
     draw_pieces()
     pygame.display.update()
@@ -108,7 +111,8 @@ def input(piece):
         elif keys[pygame.K_SPACE]:
             piece.place()
         elif keys[pygame.K_DOWN]:
-            piece.soft_drop
+            piece.soft_drop()
+            print("down")
 
 def draw_pieces():
     for x in range(10):
@@ -120,10 +124,12 @@ def draw_square(color, x, y):
     pygame.draw.rect(surface, color, (x * block_size + x_edge1 + 1, y * block_size + y_edge1 + 1, block_size - 1, block_size - 1))
 
 flag = True
-test = Piece(6)
-test.generation()
+current = Piece(6)
 surface = pygame.display.set_mode((screen_width, screen_height))
+clock = pygame.time.Clock()
 while flag:
+    clock.tick(10)
     redrawWindow(surface)
-    input(test)
+    input(current)
+    pygame.display.update()
 
