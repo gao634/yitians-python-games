@@ -7,6 +7,10 @@ screen_height = 700
 play_width = 300
 play_height = play_width * 2
 block_size = play_width / 10
+x_edge1 = (screen_width - play_width) / 2
+y_edge1 = (screen_height - play_height) / 2
+x_edge2 = screen_width - x_edge1
+y_edge2 = screen_height - y_edge1
 
 board = np.zeros((10, 20))
 
@@ -32,15 +36,15 @@ class Piece(object):
         self.placed = False
 
     def generation(self):
-        board[self.x, self.y] = 1
+        board[self.x, self.y] = self.shape
         if self.orientation[0] == 0:
-            board[self.x + self.shape[0][0] * self.orientation[1], self.y + self.shape[0][1] * self.orientation[1]] = 2
-            board[self.x + self.shape[1][0] * self.orientation[1], self.y + self.shape[1][1] * self.orientation[1]] = 3
-            board[self.x + self.shape[2][0] * self.orientation[1], self.y + self.shape[2][1] * self.orientation[1]] = 4
+            board[self.x + self.shape[0][0] * self.orientation[1], self.y + self.shape[0][1] * self.orientation[1]] = self.shape
+            board[self.x + self.shape[1][0] * self.orientation[1], self.y + self.shape[1][1] * self.orientation[1]] = self.shape
+            board[self.x + self.shape[2][0] * self.orientation[1], self.y + self.shape[2][1] * self.orientation[1]] = self.shape
         else:
-            board[self.x + self.shape[0][1] * self.orientation[1], self.y + self.shape[0][0] * self.orientation[1]] = 2
-            board[self.x + self.shape[1][1] * self.orientation[1], self.y + self.shape[1][0] * self.orientation[1]] = 3
-            board[self.x + self.shape[2][1] * self.orientation[1], self.y + self.shape[2][0] * self.orientation[1]] = 4
+            board[self.x + self.shape[0][1] * self.orientation[1], self.y + self.shape[0][0] * self.orientation[1]] = self.shape
+            board[self.x + self.shape[1][1] * self.orientation[1], self.y + self.shape[1][0] * self.orientation[1]] = self.shape
+            board[self.x + self.shape[2][1] * self.orientation[1], self.y + self.shape[2][0] * self.orientation[1]] = self.shape
 
     def left_turn(self):
         placer = self.orientation[0]
@@ -66,15 +70,11 @@ class Piece(object):
     def valid(self):
         return True
 
+
 def drawGrid(surface):
 
-    x = (screen_width - play_width) / 2
-    y = (screen_height - play_height) / 2
-    x_edge1 = x
-    y_edge1 = y
-    x_edge2 = screen_width - x
-    y_edge2 = screen_height - y
-
+    x = x_edge1
+    y = y_edge1
     pygame.draw.line(surface, (255, 255, 255), (x, y_edge1), (x, y_edge2))
     pygame.draw.line(surface, (255, 255, 255), (x_edge1, y), (x_edge2, y))
 
@@ -89,6 +89,7 @@ def drawGrid(surface):
 def redrawWindow(surface):
     surface.fill((0, 0, 0))
     drawGrid(surface)
+    draw_square(test.color, 4, 4)
     pygame.display.update()
 
 def input(piece):
@@ -107,6 +108,14 @@ def input(piece):
             piece.place()
         elif keys[pygame.K_DOWN]:
             piece.soft_drop
+
+def draw_pieces():
+    for x in range(10):
+        for y in range(20):
+            draw_square(board[x][y])
+
+def draw_square(color, x, y):
+    pygame.draw.rect(surface, color, (x * block_size + x_edge1 + 1, y * block_size + y_edge1 + 1, block_size - 1, block_size - 1))
 
 flag = True
 test = Piece(6)
