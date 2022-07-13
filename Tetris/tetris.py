@@ -103,7 +103,6 @@ def input(piece):
     for key in keys:
         if keys[pygame.K_LEFT]:
             piece.left_turn()
-            print(board)
         elif keys[pygame.K_RIGHT]:
             piece.right_turn()
         elif keys[pygame.K_SPACE]:
@@ -115,7 +114,7 @@ def draw_pieces():
     for x in range(10):
         for y in range(20):
             if (int(board[x][y]) - 1) != -1:
-                draw_square(shape_colors[int(board[x][y]) - 1], x, y)
+                draw_square(shape_colors[int(board[x][y]) - 1], x, 19 - y)
 
 def draw_square(color, x, y):
     pygame.draw.rect(surface, color, (x * block_size + x_edge1 + 1, y * block_size + y_edge1 + 1, block_size - 1, block_size - 1))
@@ -123,7 +122,6 @@ def draw_square(color, x, y):
 flag = True
 test = Piece(6)
 test.generation()
-print(board)
 surface = pygame.display.set_mode((screen_width, screen_height))
 while flag:
     redrawWindow(surface)
