@@ -59,11 +59,10 @@ class Piece(object):
         self.orientation[1] = -placer
 
     def soft_drop(self):
-        print(self.y)
-        self.y -= 1
-        print(self.y)
-        #if not self.valid():
-        #    self.y += 1
+        if self.y > 2:
+            self.y -= 1
+        if not self.valid():
+            self.y += 1
 
     def place(self):
         while self.valid():
@@ -112,7 +111,6 @@ def input(piece):
             piece.place()
         elif keys[pygame.K_DOWN]:
             piece.soft_drop()
-            print("down")
 
 def draw_pieces():
     for x in range(10):
@@ -128,6 +126,7 @@ current = Piece(6)
 surface = pygame.display.set_mode((screen_width, screen_height))
 clock = pygame.time.Clock()
 while flag:
+    pygame.time.delay(50)
     clock.tick(10)
     redrawWindow(surface)
     input(current)
