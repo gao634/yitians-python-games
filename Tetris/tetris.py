@@ -124,12 +124,16 @@ def input(piece):
     for key in keys:
         if keys[pygame.K_LEFT]:
             piece.left_turn()
+            print("left")
         elif keys[pygame.K_RIGHT]:
             piece.right_turn()
+            print("right")
         elif keys[pygame.K_SPACE]:
             piece.place()
+            print("place")
         elif keys[pygame.K_DOWN]:
             piece.soft_drop()
+            print("down")
 
 def draw_pieces():
     for x in range(10):
@@ -141,19 +145,21 @@ def draw_square(color, x, y):
     pygame.draw.rect(surface, color, (x * block_size + x_edge1 + 1, y * block_size + y_edge1 + 1, block_size - 1, block_size - 1))
 
 flag = True
-current = Piece(6)
+current = Piece(2)
 surface = pygame.display.set_mode((screen_width, screen_height))
 clock = pygame.time.Clock()
 current.soft_drop()
-current.left_turn()
+#current.left_turn()
 #current.left_turn()
 #current.left_turn()
 #current.right_turn()
 print(current.orientation)
-while flag:
-    pygame.time.delay(50)
-    clock.tick(10)
-    redrawWindow(surface)
-    input(current)
-    pygame.display.update()
+def main():
+    while flag:
+        clock.tick(1)
+        print("tick")
+        redrawWindow(surface)
+        input(current)
+        pygame.display.update()
 
+main()
