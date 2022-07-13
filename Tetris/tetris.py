@@ -27,24 +27,26 @@ shape_colors = [(0, 255, 0), (255, 0, 0), (0, 255, 255), (255, 255, 0), (255, 16
 
 class Piece(object):
     global board
-    def __init__(self, shape):
-        self.color = shape_colors[shape]
-        self.shape = shapes[shape]
+    def __init__(self, shape_number):
+        self.color = shape_colors[shape_number]
+        self.shape = shapes[shape_number]
+        self.shape_number = shape_number
         self.orientation = [0, 1]
         self.x = self.shape[3][0]
         self.y = self.shape[3][1]
         self.placed = False
 
     def generation(self):
-        board[self.x, self.y] = self.shape
+        num = self.shape_number + 1
+        board[self.x, self.y] = num
         if self.orientation[0] == 0:
-            board[self.x + self.shape[0][0] * self.orientation[1], self.y + self.shape[0][1] * self.orientation[1]] = self.shape
-            board[self.x + self.shape[1][0] * self.orientation[1], self.y + self.shape[1][1] * self.orientation[1]] = self.shape
-            board[self.x + self.shape[2][0] * self.orientation[1], self.y + self.shape[2][1] * self.orientation[1]] = self.shape
+            board[self.x + self.shape[0][0] * self.orientation[1], self.y + self.shape[0][1] * self.orientation[1]] = num
+            board[self.x + self.shape[1][0] * self.orientation[1], self.y + self.shape[1][1] * self.orientation[1]] = num
+            board[self.x + self.shape[2][0] * self.orientation[1], self.y + self.shape[2][1] * self.orientation[1]] = num
         else:
-            board[self.x + self.shape[0][1] * self.orientation[1], self.y + self.shape[0][0] * self.orientation[1]] = self.shape
-            board[self.x + self.shape[1][1] * self.orientation[1], self.y + self.shape[1][0] * self.orientation[1]] = self.shape
-            board[self.x + self.shape[2][1] * self.orientation[1], self.y + self.shape[2][0] * self.orientation[1]] = self.shape
+            board[self.x + self.shape[0][1] * self.orientation[1], self.y + self.shape[0][0] * self.orientation[1]] = num
+            board[self.x + self.shape[1][1] * self.orientation[1], self.y + self.shape[1][0] * self.orientation[1]] = num
+            board[self.x + self.shape[2][1] * self.orientation[1], self.y + self.shape[2][0] * self.orientation[1]] = num
 
     def left_turn(self):
         placer = self.orientation[0]
@@ -89,7 +91,7 @@ def drawGrid(surface):
 def redrawWindow(surface):
     surface.fill((0, 0, 0))
     drawGrid(surface)
-    draw_square(test.color, 4, 4)
+    draw_pieces()
     pygame.display.update()
 
 def input(piece):
@@ -112,7 +114,8 @@ def input(piece):
 def draw_pieces():
     for x in range(10):
         for y in range(20):
-            draw_square(board[x][y])
+            if (int(board[x][y]) - 1) != -1:
+                draw_square(shape_colors[int(board[x][y]) - 1], x, y)
 
 def draw_square(color, x, y):
     pygame.draw.rect(surface, color, (x * block_size + x_edge1 + 1, y * block_size + y_edge1 + 1, block_size - 1, block_size - 1))
