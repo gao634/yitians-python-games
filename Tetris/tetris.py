@@ -1,6 +1,6 @@
 import pygame
 import numpy as np
-
+pygame.init()
 #screen parameters
 screen_width = 800
 screen_height = 700
@@ -61,6 +61,7 @@ class Piece(object):
             board[self.x + self.shape[2][1] * self.orientation[0], self.y + self.shape[2][0] * self.orientation[0]] = 0
 
     def left_turn(self):
+        print("left")
         self.delete()
         placer = self.orientation[0]
         self.orientation[0] = -self.orientation[1]
@@ -110,7 +111,6 @@ def drawGrid(surface):
 
 def redrawWindow(surface):
     surface.fill((0, 0, 0))
-    current.generation()
     drawGrid(surface)
     draw_pieces()
     pygame.display.update()
@@ -120,20 +120,43 @@ def input(piece):
         if event.type == pygame.QUIT:
             flag = False
             pygame.quit()
-    keys = pygame.key.get_pressed()
-    for key in keys:
-        if keys[pygame.K_LEFT]:
-            piece.left_turn()
-            print("left")
-        elif keys[pygame.K_RIGHT]:
-            piece.right_turn()
-            print("right")
-        elif keys[pygame.K_SPACE]:
-            piece.place()
-            print("place")
-        elif keys[pygame.K_DOWN]:
-            piece.soft_drop()
-            print("down")
+
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                piece.left_turn()
+            if event.key == pygame.K_RIGHT:
+                piece.right_turn()
+            if event.key == pygame.K_DOWN:
+                piece.soft_drop()
+            if event.key == pygame.K_SPACE:
+                piece.place()
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_LEFT:
+                pass
+                #piece.left_turn()
+            if event.key == pygame.K_RIGHT:
+                pass
+                #piece.right_turn()
+            if event.key == pygame.K_DOWN:
+                pass
+                #piece.place()
+            if event.key == pygame.K_SPACE:
+                pass
+                #piece.soft_drop()
+    #keys = pygame.key.get_pressed()
+    #for key in keys:
+    #    if keys[pygame.K_LEFT]:
+    #        piece.left_turn()
+    #        #print("left")
+    #    elif keys[pygame.K_RIGHT]:
+    #        piece.right_turn()
+    #        #print("right")
+    #    elif keys[pygame.K_SPACE]:
+    #        piece.place()
+    #        #print("place")
+    #    elif keys[pygame.K_DOWN]:
+    #        piece.soft_drop()
+    #        #print("down")
 
 def draw_pieces():
     for x in range(10):
@@ -148,16 +171,9 @@ flag = True
 current = Piece(2)
 surface = pygame.display.set_mode((screen_width, screen_height))
 clock = pygame.time.Clock()
-current.soft_drop()
-#current.left_turn()
-#current.left_turn()
-#current.left_turn()
-#current.right_turn()
-print(current.orientation)
 def main():
     while flag:
-        clock.tick(1)
-        print("tick")
+        clock.tick(100)
         redrawWindow(surface)
         input(current)
         pygame.display.update()
