@@ -35,6 +35,7 @@ class Piece(object):
         self.x = self.shape[3][0]
         self.y = self.shape[3][1]
         self.placed = False
+        self.generation()
 
     def generation(self):
         num = self.shape_number + 1
@@ -44,32 +45,50 @@ class Piece(object):
             board[self.x + self.shape[1][0] * self.orientation[1], self.y + self.shape[1][1] * self.orientation[1]] = num
             board[self.x + self.shape[2][0] * self.orientation[1], self.y + self.shape[2][1] * self.orientation[1]] = num
         else:
-            board[self.x + self.shape[0][1] * self.orientation[1], self.y + self.shape[0][0] * self.orientation[1]] = num
-            board[self.x + self.shape[1][1] * self.orientation[1], self.y + self.shape[1][0] * self.orientation[1]] = num
-            board[self.x + self.shape[2][1] * self.orientation[1], self.y + self.shape[2][0] * self.orientation[1]] = num
+            board[self.x + self.shape[0][1] * self.orientation[0], self.y + self.shape[0][0] * self.orientation[0]] = num
+            board[self.x + self.shape[1][1] * self.orientation[0], self.y + self.shape[1][0] * self.orientation[0]] = num
+            board[self.x + self.shape[2][1] * self.orientation[0], self.y + self.shape[2][0] * self.orientation[0]] = num
+
+    def delete(self):
+        board[self.x, self.y] = 0
+        if self.orientation[0] == 0:
+            board[self.x + self.shape[0][0] * self.orientation[1], self.y + self.shape[0][1] * self.orientation[1]] = 0
+            board[self.x + self.shape[1][0] * self.orientation[1], self.y + self.shape[1][1] * self.orientation[1]] = 0
+            board[self.x + self.shape[2][0] * self.orientation[1], self.y + self.shape[2][1] * self.orientation[1]] = 0
+        else:
+            board[self.x + self.shape[0][1] * self.orientation[0], self.y + self.shape[0][0] * self.orientation[0]] = 0
+            board[self.x + self.shape[1][1] * self.orientation[0], self.y + self.shape[1][0] * self.orientation[0]] = 0
+            board[self.x + self.shape[2][1] * self.orientation[0], self.y + self.shape[2][0] * self.orientation[0]] = 0
 
     def left_turn(self):
+        self.delete()
         placer = self.orientation[0]
-        self.orientation[0] = self.orientation[1]
+        self.orientation[0] = -self.orientation[1]
         self.orientation[1] = placer
+        self.generation()
 
     def right_turn(self):
+        self.delete()
         placer = self.orientation[0]
         self.orientation[0] = self.orientation[1]
         self.orientation[1] = -placer
+        self.generation()
 
     def soft_drop(self):
+        self.delete()
         if self.y > 2:
             self.y -= 1
         if not self.valid():
             self.y += 1
+        self.generation()
 
     def place(self):
+        self.delete()
         while self.valid():
             self.y -= 1
         self.y += 1
         self.placed = true
-
+        self.generation()
     def valid(self):
         return True
 
@@ -125,6 +144,12 @@ flag = True
 current = Piece(6)
 surface = pygame.display.set_mode((screen_width, screen_height))
 clock = pygame.time.Clock()
+current.soft_drop()
+current.left_turn()
+#current.left_turn()
+#current.left_turn()
+#current.right_turn()
+print(current.orientation)
 while flag:
     pygame.time.delay(50)
     clock.tick(10)
