@@ -171,33 +171,6 @@ def input(piece):
                 piece.soft_drop()
             if event.key == pygame.K_SPACE:
                 piece.place()
-        if event.type == pygame.KEYUP:
-            if event.key == pygame.K_LEFT:
-                pass
-                # piece.left_turn()
-            if event.key == pygame.K_RIGHT:
-                pass
-                # piece.right_turn()
-            if event.key == pygame.K_DOWN:
-                pass
-                # piece.place()
-            if event.key == pygame.K_SPACE:
-                pass
-                # piece.soft_drop()
-    # keys = pygame.key.get_pressed()
-    # for key in keys:
-    #    if keys[pygame.K_LEFT]:
-    #        piece.left_turn()
-    #        #print("left")
-    #    elif keys[pygame.K_RIGHT]:
-    #        piece.right_turn()
-    #        #print("right")
-    #    elif keys[pygame.K_SPACE]:
-    #        piece.place()
-    #        #print("place")
-    #    elif keys[pygame.K_DOWN]:
-    #        piece.soft_drop()
-    #        #print("down")
 
 
 def draw_pieces():
@@ -217,10 +190,15 @@ current = Piece(2)
 surface = pygame.display.set_mode((screen_width, screen_height))
 clock = pygame.time.Clock()
 print(board)
-
+fall_speed = 1
 
 def main():
+    tick = 0
     while flag:
+        tick += 1
+        if tick == 100 - fall_speed:
+            current.soft_drop()
+            tick = 0
         clock.tick(100)
         redrawWindow(surface)
         input(current)
