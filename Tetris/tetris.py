@@ -1,5 +1,6 @@
 import pygame
 import numpy as np
+import random
 
 pygame.init()
 # screen parameters
@@ -122,15 +123,18 @@ class Piece(object):
         self.delete()
         self.y -= 1
         if not self.generation():
+            self.delete
             self.y += 1
+        self.generation()
 
     def place(self):
         self.delete()
         while self.generation():
             self.delete()
             self.y -= 1
-
+        self.delete()
         self.y += 1
+        self.generation()
         self.placed = True
 
 
@@ -157,6 +161,7 @@ def redrawWindow(surface):
 
 
 def input(piece):
+    global flag
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             flag = False
@@ -184,25 +189,30 @@ def draw_square(color, x, y):
     pygame.draw.rect(surface, color,
                      (x * block_size + x_edge1 + 1, y * block_size + y_edge1 + 1, block_size - 1, block_size - 1))
 
+def next_piece():
+    piece = Piece(random.randint(0, 6))
+    return piece
 
-flag = True
-current = Piece(2)
-surface = pygame.display.set_mode((screen_width, screen_height))
-clock = pygame.time.Clock()
-print(board)
-fall_speed = 1
 
 def main():
+    global current, flag, surface
+    flag = True
+    current = next_piece()
+    surface = pygame.display.set_mode((screen_width, screen_height))
+    clock = pygame.time.Clock()
+    # print(board)
+    fall_speed = 100
     tick = 0
     while flag:
-        tick += 1
-        if tick == 100 - fall_speed:
+        clock.tick(100)
+        tick += fall_speed
+        if tick == 10000:
             current.soft_drop()
             tick = 0
-        clock.tick(100)
         redrawWindow(surface)
         input(current)
-        pygame.display.update()
+        if current.placed:
+            current = next_piece()
 
 
 main()
