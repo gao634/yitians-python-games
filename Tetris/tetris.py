@@ -321,10 +321,12 @@ def input(piece):
             flag = False
             main_flag = False
             pygame.quit()
+            return
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_w:
                 hold_piece()
+                return
             if event.key == pygame.K_a:
                 piece.left_turn()
             if event.key == pygame.K_d:
@@ -339,6 +341,7 @@ def input(piece):
                 piece.soft_drop()
             if event.key == pygame.K_SPACE:
                 piece.place()
+                return
             if event.key == pygame.K_r:
                 restart()
         if event.type == pygame.KEYUP:
