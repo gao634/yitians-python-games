@@ -33,7 +33,7 @@ shape_colors = [(0, 255, 0), (255, 0, 0), (0, 255, 255), (255, 255, 0), (0, 0, 2
 class Piece(object):
 
     def __init__(self, shape_number):
-        global flag
+        global flag, main_flag
         self.color = shape_colors[shape_number]
         self.shape = shapes[shape_number]
         self.shape_number = shape_number
@@ -43,6 +43,7 @@ class Piece(object):
         self.placed = False
         if not self.generation():
             flag = False
+            main_flag = False
 
     def block_valid(self, x, y, flag):
         if x < 0 or x > 9:
@@ -217,11 +218,17 @@ def redrawWindow(surface):
         hold_display()
     pygame.display.update()
 
+def restart():
+    global flag, main_flag
+    main_flag = True
+    flag = False
+
 def input(piece):
-    global flag
+    global flag, main_flag
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             flag = False
+            main_flag = False
             pygame.quit()
 
         if event.type == pygame.KEYDOWN:
@@ -241,6 +248,8 @@ def input(piece):
                 piece.soft_drop()
             if event.key == pygame.K_SPACE:
                 piece.place()
+            if event.key == pygame.K_r:
+                restart()
 
 
 def draw_pieces():
@@ -292,8 +301,11 @@ def check_line():
             break
 
 def main():
-    global current, flag, surface, lines, hold, pieces, num, piece_count, hold_check
+    global current, flag, surface, lines, hold, pieces, num, piece_count, hold_check, board, backup_board, hold_board
     print("start")
+    board = np.zeros((10, 20))
+    backup_board = np.zeros((10, 20))
+    hold_board = np.zeros((5, 4))
     piece_count = 0
     num = 0
     lines = 0
@@ -308,6 +320,7 @@ def main():
     fall_speed = 100
     tick = 0
     y_check = 0
+    place_tick = 0
     while flag:
         clock.tick(100)
         tick += fall_speed
@@ -315,7 +328,10 @@ def main():
             y_check = current.y
             current.soft_drop()
             if current.y == y_check:
-                current.place()
+                place_tick += 1
+                if place_tick == 2:
+                    current.place()
+                    place_tick = 1
             tick = 0
         redrawWindow(surface)
         input(current)
@@ -331,6 +347,7 @@ def main():
             if num == 6:
                 pieces = piece_order()
 
-
-main()
+main_flag = True
+while main_flag:
+    main()
 print(lines)
