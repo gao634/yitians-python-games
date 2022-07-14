@@ -342,7 +342,7 @@ def main():
         if current.placed:
             check_line()
             hold_check = True
-            fall_speed += 5
+            fall_speed += 3
             for x in range(10):
                 for y in range(20):
                     backup_board[x][y] = board[x][y]
