@@ -26,7 +26,7 @@ J = [(1, 1), (0, -1), (0, 1), (4, 18)]
 L = [(0, 1), (0, -1), (-1, 1), (5, 18)]
 T = [(-1, 0), (1, 0), (0, -1), (4, 19)]
 shapes = [S, Z, I, O, J, L, T]
-shape_colors = [(0, 255, 0), (255, 0, 0), (0, 255, 255), (255, 255, 0), (255, 165, 0), (0, 0, 255), (128, 0, 128)]
+shape_colors = [(0, 255, 0), (255, 0, 0), (0, 255, 255), (255, 255, 0), (0, 0, 255), (255, 165, 0), (128, 0, 128)]
 
 
 class Piece(object):
@@ -112,7 +112,7 @@ class Piece(object):
         self.orientation[1] = placer
         if not self.generation():
             self.right_turn()
-        print(self.orientation)
+
 
     def right_turn(self):
         self.delete()
@@ -121,7 +121,7 @@ class Piece(object):
         self.orientation[1] = -placer
         if not self.generation():
             self.left_turn()
-        print(self.orientation)
+
     def soft_drop(self):
         self.delete()
         self.y -= 1
@@ -243,18 +243,23 @@ def clear_line(line):
                 board[(x, y)] = 0
 
 def check_line():
+    global lines
     for y in range(20):
         check = True
         for x in range(10):
             if board[(x, y)] == 0:
                 check = False
         if check:
+            lines += 1
             clear_line(y)
+            check_line()
+            break
 
 def main():
-    global current, flag, surface
+    global current, flag, surface, lines
     piece_count = 0
     num = 0
+    lines = 0
     flag = True
     pieces = piece_order()
     current = Piece(pieces[num])
@@ -288,3 +293,4 @@ def main():
 
 
 main()
+print(lines)
