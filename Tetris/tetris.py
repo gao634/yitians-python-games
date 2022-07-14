@@ -403,6 +403,7 @@ def main():
                 for y in range(20):
                     backup_board[x][y] = board[x][y]
             piece_count += 1
+            num = piece_count % 7
             current = Piece(pieces[num])
             if num == 6:
                 pieces = next_seven
