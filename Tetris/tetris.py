@@ -21,10 +21,10 @@ hold_board = np.zeros((5, 4))
 # directions for shape generation
 S = [(-1, 0), (0, 1), (1, 1), (4, 18)]
 Z = [(-1, 1), (0, 1), (1, 0), (5, 18)]
-I = [(0, 1), (0, -1), (0, -2), (4, 18)]
+I = [(-1, 0), (1, 0), (2, 0), (4, 19)]
 O = [(-1, 0), (-1, 1), (0, 1), (5, 18)]
-J = [(1, 1), (0, -1), (0, 1), (4, 18)]
-L = [(0, 1), (0, -1), (-1, 1), (5, 18)]
+J = [(1, -1), (-1, 0), (1, 0), (4, 19)]
+L = [(1, 0), (-1, 0), (-1, -1), (5, 19)]
 T = [(-1, 0), (1, 0), (0, -1), (4, 19)]
 shapes = [S, Z, I, O, J, L, T]
 shape_colors = [(0, 255, 0), (255, 0, 0), (0, 255, 255), (255, 255, 0), (0, 0, 255), (255, 165, 0), (128, 0, 128)]
@@ -108,27 +108,31 @@ class Piece(object):
         return check
 
     def left_turn(self):
-        self.delete()
-        placer = self.orientation[0]
-        self.orientation[0] = -self.orientation[1]
-        self.orientation[1] = placer
-        if not self.generation():
-            self.right_turn()
+        if self.shape_number != 3:
+            self.delete()
+            placer = self.orientation[0]
+            self.orientation[0] = -self.orientation[1]
+            self.orientation[1] = placer
+            if not self.generation():
+                self.right_turn()
 
     def right_turn(self):
-        self.delete()
-        placer = self.orientation[0]
-        self.orientation[0] = self.orientation[1]
-        self.orientation[1] = -placer
-        if not self.generation():
-            self.left_turn()
+        if self.shape_number != 3:
+            self.delete()
+            placer = self.orientation[0]
+            self.orientation[0] = self.orientation[1]
+            self.orientation[1] = -placer
+            if not self.generation():
+                self.left_turn()
 
     def flip(self):
-        self.delete()
-        self.orientation[0] *= -1
-        self.orientation[1] *= -1
-        if not self.generation():
-            self.left_turn()
+        if self.shape_number != 3:
+            self.delete()
+            self.orientation[0] *= -1
+            self.orientation[1] *= -1
+            if not self.generation():
+                self.left_turn()
+
     def soft_drop(self):
         self.delete()
         self.y -= 1
@@ -324,7 +328,7 @@ def main():
     while flag:
         clock.tick(100)
         tick += fall_speed
-        if tick == 10000:
+        if tick >= 10000:
             y_check = current.y
             current.soft_drop()
             if current.y == y_check:
@@ -338,6 +342,7 @@ def main():
         if current.placed:
             check_line()
             hold_check = True
+            fall_speed += 5
             for x in range(10):
                 for y in range(20):
                     backup_board[x][y] = board[x][y]
