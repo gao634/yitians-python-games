@@ -67,11 +67,11 @@ class Piece(object):
                 self.x + self.shape[2][0] * self.orientation[1], self.y + self.shape[2][1] * self.orientation[1])
         else:
             blocks[1] = (
-                self.x + self.shape[0][1] * self.orientation[0], self.y + self.shape[0][0] * self.orientation[0])
+                self.x + self.shape[0][1] * self.orientation[0], self.y - self.shape[0][0] * self.orientation[0])
             blocks[2] = (
-                self.x + self.shape[1][1] * self.orientation[0], self.y + self.shape[1][0] * self.orientation[0])
+                self.x + self.shape[1][1] * self.orientation[0], self.y - self.shape[1][0] * self.orientation[0])
             blocks[3] = (
-                self.x + self.shape[2][1] * self.orientation[0], self.y + self.shape[2][0] * self.orientation[0])
+                self.x + self.shape[2][1] * self.orientation[0], self.y - self.shape[2][0] * self.orientation[0])
         check = True
         for block in blocks:
             if self.block_valid(block[0], block[1], True):
@@ -92,11 +92,11 @@ class Piece(object):
                 self.x + self.shape[2][0] * self.orientation[1], self.y + self.shape[2][1] * self.orientation[1])
         else:
             blocks[1] = (
-                self.x + self.shape[0][1] * self.orientation[0], self.y + self.shape[0][0] * self.orientation[0])
+                self.x + self.shape[0][1] * self.orientation[0], self.y - self.shape[0][0] * self.orientation[0])
             blocks[2] = (
-                self.x + self.shape[1][1] * self.orientation[0], self.y + self.shape[1][0] * self.orientation[0])
+                self.x + self.shape[1][1] * self.orientation[0], self.y - self.shape[1][0] * self.orientation[0])
             blocks[3] = (
-                self.x + self.shape[2][1] * self.orientation[0], self.y + self.shape[2][0] * self.orientation[0])
+                self.x + self.shape[2][1] * self.orientation[0], self.y - self.shape[2][0] * self.orientation[0])
         check = True
         for block in blocks:
             if self.block_valid(block[0], block[1], False):
@@ -112,6 +112,7 @@ class Piece(object):
         self.orientation[1] = placer
         if not self.generation():
             self.right_turn()
+        print(self.orientation)
 
     def right_turn(self):
         self.delete()
@@ -120,7 +121,7 @@ class Piece(object):
         self.orientation[1] = -placer
         if not self.generation():
             self.left_turn()
-
+        print(self.orientation)
     def soft_drop(self):
         self.delete()
         self.y -= 1
@@ -232,6 +233,23 @@ def piece_order():
         repeat = True
     return pieces
 
+def clear_line(line):
+    for y in range(20):
+        if y > line:
+            for x in range(10):
+                board[(x, y - 1)] = board[(x, y)]
+        if y == 19:
+            for x in range(10):
+                board[(x, y)] = 0
+
+def check_line():
+    for y in range(20):
+        check = True
+        for x in range(10):
+            if board[(x, y)] == 0:
+                check = False
+        if check:
+            clear_line(y)
 
 def main():
     global current, flag, surface
@@ -258,6 +276,7 @@ def main():
         redrawWindow(surface)
         input(current)
         if current.placed:
+            check_line()
             for x in range(10):
                 for y in range(20):
                     backup_board[x][y] = board[x][y]
