@@ -216,7 +216,7 @@ def hold_piece():
     hold_check = False
 
 def next_display():
-    global next_board, pieces, surface, num, next_seven
+    global next_board, pieces, surface, num, next_seven, list
     #print(num)
     #print(pieces)
     #print(next_seven)
@@ -406,10 +406,15 @@ def main():
                     backup_board[x][y] = board[x][y]
             piece_count += 1
             num = piece_count % 7
-            current = Piece(pieces[num])
-            if num == 6:
+            if num == 0:
                 pieces = next_seven
                 next_seven = piece_order()
+            current = Piece(pieces[num])
+            print(piece_count)
+            print(num)
+            print(pieces)
+            print(next_seven)
+            print(list)
 
 main_flag = True
 while main_flag:
