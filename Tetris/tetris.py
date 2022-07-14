@@ -114,7 +114,7 @@ class Piece(object):
             placer = self.orientation[0]
             self.orientation[0] = -self.orientation[1]
             self.orientation[1] = placer
-            if not self.generation():
+            if not self.bounce_check():
                 self.right_turn()
 
     def right_turn(self):
@@ -123,7 +123,7 @@ class Piece(object):
             placer = self.orientation[0]
             self.orientation[0] = self.orientation[1]
             self.orientation[1] = -placer
-            if not self.generation():
+            if not self.bounce_check():
                 self.left_turn()
 
     def flip(self):
@@ -131,8 +131,8 @@ class Piece(object):
             self.delete()
             self.orientation[0] *= -1
             self.orientation[1] *= -1
-            if not self.generation():
-                self.left_turn()
+            if not self.bounce_check():
+                self.flip()
 
     def soft_drop(self):
         self.delete()
@@ -167,6 +167,40 @@ class Piece(object):
             self.delete()
             self.x -= 1
         self.generation()
+
+    def bounce_check(self):
+        if not self.generation():
+            self.delete()
+            self.y -= 1
+            if not self.generation():
+                self.delete()
+                self.y += 2
+                if not self.generation():
+                    self.delete()
+                    self.y -= 1
+                    self.x -= 1
+                    if not self.generation():
+                        self.delete()
+                        self.x += 2
+                        if not self.generation():
+                            self.delete()
+                            self.x -= 1
+                            self.y -= 2
+                            if not self.generation():
+                                self.delete()
+                                self.y += 4
+                                if not self.generation():
+                                    self.delete()
+                                    self.y -= 2
+                                    self.x -= 2
+                                    if not self.generation():
+                                        self.delete()
+                                        self.x += 4
+                                        if not self.generation():
+                                            self.delete()
+                                            self.x -= 2
+                                            return False
+        return True
 
 
 
@@ -410,11 +444,6 @@ def main():
                 pieces = next_seven
                 next_seven = piece_order()
             current = Piece(pieces[num])
-            print(piece_count)
-            print(num)
-            print(pieces)
-            print(next_seven)
-            print(list)
 
 main_flag = True
 while main_flag:
