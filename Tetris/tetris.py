@@ -383,15 +383,17 @@ def main():
     while flag:
         num = piece_count % 7
         clock.tick(100)
+        place_tick += 1
         tick += fall_speed
         if tick >= 10000:
             y_check = current.y
             current.soft_drop()
             if current.y == y_check:
-                place_tick += 1
-                if place_tick == 2:
+                if place_tick >= 100:
                     current.place()
-                    place_tick = 1
+                    place_tick = 0
+            else:
+                place_tick = 0
             tick = 0
         redrawWindow(surface)
         input(current)
