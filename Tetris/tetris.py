@@ -16,6 +16,7 @@ y_edge2 = screen_height - y_edge1
 
 board = np.zeros((10, 20))
 backup_board = np.zeros((10, 20))
+hold_board = np.zeros((5, 4))
 
 # directions for shape generation
 S = [(-1, 0), (0, 1), (1, 1), (4, 18)]
@@ -177,15 +178,21 @@ def drawGrid(surface):
         y = y + block_size
         pygame.draw.line(surface, (255, 255, 255), (x_edge1, y), (x_edge2, y))
 
-
-def redrawWindow(surface):
-    surface.fill((0, 0, 0))
-    drawGrid(surface)
-    draw_pieces()
-    pygame.display.update()
-
 def hold_display():
-
+    global hold_board, hold, surface
+    for x in range(5):
+        for y in range(4):
+            hold_board[(x, y)] = 0
+    hold_board[(1, 1)] = 1
+    hold_board[(1 + shapes[hold][0][0], 1 + shapes[hold][0][1])] = 1
+    hold_board[(1 + shapes[hold][1][0], 1 + shapes[hold][1][1])] = 1
+    hold_board[(1 + shapes[hold][2][0], 1 + shapes[hold][2][1])] = 1
+    for x in range(5):
+        for y in range(4):
+            if hold_board[(x, y)] == 1:
+                pygame.draw.rect(surface, shape_colors[hold],
+                                 (x * block_size + x_edge1 + 1 - block_size * 6, y * block_size + y_edge1 + 1, block_size - 1,
+                                  block_size - 1))
 
 def hold_piece():
     global current, hold, pieces, piece_count, hold_check
@@ -199,10 +206,16 @@ def hold_piece():
             spacer = hold
             hold = current.shape_number
             current = Piece(spacer)
+        hold_display()
     hold_check = False
 
-
-
+def redrawWindow(surface):
+    surface.fill((0, 0, 0))
+    drawGrid(surface)
+    draw_pieces()
+    if hold != -1:
+        hold_display()
+    pygame.display.update()
 
 def input(piece):
     global flag
@@ -280,6 +293,7 @@ def check_line():
 
 def main():
     global current, flag, surface, lines, hold, pieces, num, piece_count, hold_check
+    print("start")
     piece_count = 0
     num = 0
     lines = 0
