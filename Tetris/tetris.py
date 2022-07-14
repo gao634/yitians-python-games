@@ -15,8 +15,9 @@ x_edge2 = screen_width - x_edge1
 y_edge2 = screen_height - y_edge1
 
 board = np.zeros((10, 20))
+backup_board = np.zeros((10, 20))
 
-# directions for shap generation
+# directions for shape generation
 S = [(-1, 0), (0, 1), (1, 1), (4, 18)]
 Z = [(-1, 1), (0, 1), (1, 0), (5, 18)]
 I = [(0, 1), (0, -1), (0, -2), (4, 18)]
@@ -29,9 +30,9 @@ shape_colors = [(0, 255, 0), (255, 0, 0), (0, 255, 255), (255, 255, 0), (255, 16
 
 
 class Piece(object):
-    global board
 
     def __init__(self, shape_number):
+        global flag
         self.color = shape_colors[shape_number]
         self.shape = shapes[shape_number]
         self.shape_number = shape_number
@@ -39,7 +40,8 @@ class Piece(object):
         self.x = self.shape[3][0]
         self.y = self.shape[3][1]
         self.placed = False
-        self.generation()
+        if not self.generation():
+            flag = False
 
     def block_valid(self, x, y, flag):
         if x < 0 or x > 9:
@@ -98,7 +100,7 @@ class Piece(object):
         check = True
         for block in blocks:
             if self.block_valid(block[0], block[1], False):
-                board[block] = 0
+                board[block] = backup_board[block]
             else:
                 check = False
         return check
@@ -123,7 +125,7 @@ class Piece(object):
         self.delete()
         self.y -= 1
         if not self.generation():
-            self.delete
+            self.delete()
             self.y += 1
         self.generation()
 
@@ -136,6 +138,22 @@ class Piece(object):
         self.y += 1
         self.generation()
         self.placed = True
+
+    def move_left(self):
+        self.delete()
+        self.x -= 1
+        if not self.generation():
+            self.delete()
+            self.x += 1
+        self.generation()
+
+    def move_right(self):
+        self.delete()
+        self.x += 1
+        if not self.generation():
+            self.delete()
+            self.x -= 1
+        self.generation()
 
 
 def drawGrid(surface):
@@ -168,10 +186,20 @@ def input(piece):
             pygame.quit()
 
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
+            if event.key == pygame.K_a:
                 piece.left_turn()
-            if event.key == pygame.K_RIGHT:
+            if event.key == pygame.K_d:
                 piece.right_turn()
+            if event.key == pygame.K_w:
+                piece.left_turn()
+                piece.left_turn()
+            if event.key == pygame.K_s:
+                piece.right_turn()
+                piece.right_turn()
+            if event.key == pygame.K_LEFT:
+                piece.move_left()
+            if event.key == pygame.K_RIGHT:
+                piece.move_right()
             if event.key == pygame.K_DOWN:
                 piece.soft_drop()
             if event.key == pygame.K_SPACE:
@@ -203,15 +231,22 @@ def main():
     # print(board)
     fall_speed = 100
     tick = 0
+    y_check = 0
     while flag:
         clock.tick(100)
         tick += fall_speed
         if tick == 10000:
+            y_check = current.y
             current.soft_drop()
+            if current.y == y_check:
+                current.place()
             tick = 0
         redrawWindow(surface)
         input(current)
         if current.placed:
+            for x in range(10):
+                for y in range(20):
+                    backup_board[x][y] = board[x][y]
             current = next_piece()
 
 
