@@ -217,15 +217,29 @@ def draw_square(color, x, y):
     pygame.draw.rect(surface, color,
                      (x * block_size + x_edge1 + 1, y * block_size + y_edge1 + 1, block_size - 1, block_size - 1))
 
-def next_piece():
-    piece = Piece(random.randint(0, 6))
-    return piece
+
+def piece_order():
+    pieces = []
+    repeat = True
+    while len(pieces) < 7:
+        num = random.randint(0, 6)
+        for piece in pieces:
+            if num == piece:
+                repeat = False
+        if repeat:
+            pieces.append(num)
+    return pieces
 
 
 def main():
     global current, flag, surface
+    piece_count = 0
+    num = 0
     flag = True
-    current = next_piece()
+    print("0")
+    pieces = piece_order()
+    print("1")
+    current = Piece(pieces[num])
     surface = pygame.display.set_mode((screen_width, screen_height))
     clock = pygame.time.Clock()
     # print(board)
@@ -247,7 +261,11 @@ def main():
             for x in range(10):
                 for y in range(20):
                     backup_board[x][y] = board[x][y]
-            current = next_piece()
+            piece_count += 1
+            num = piece_count % 7
+            current = Piece(pieces[num])
+            if num == 6:
+                pieces = piece_order()
 
 
 main()
