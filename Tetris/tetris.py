@@ -17,12 +17,13 @@ y_edge2 = screen_height - y_edge1
 board = np.zeros((10, 20))
 backup_board = np.zeros((10, 20))
 hold_board = np.zeros((5, 4))
+next_board = np.zeros((5, 12))
 
 # directions for shape generation
-S = [(-1, 0), (0, 1), (1, 1), (4, 18)]
-Z = [(-1, 1), (0, 1), (1, 0), (5, 18)]
+S = [(-1, -1), (0, -1), (1, 0), (4, 19)]
+Z = [(-1, 0), (0, -1), (1, -1), (5, 19)]
 I = [(-1, 0), (1, 0), (2, 0), (4, 19)]
-O = [(-1, 0), (-1, 1), (0, 1), (5, 18)]
+O = [(-1, 0), (-1, -1), (0, -1), (5, 19)]
 J = [(1, -1), (-1, 0), (1, 0), (4, 19)]
 L = [(1, 0), (-1, 0), (-1, -1), (5, 19)]
 T = [(-1, 0), (1, 0), (0, -1), (4, 19)]
@@ -214,12 +215,64 @@ def hold_piece():
         hold_display()
     hold_check = False
 
+def next_display():
+    global next_board, pieces, surface, num, next_seven
+    #print(num)
+    #print(pieces)
+    #print(next_seven)
+    for x in range(5):
+        for y in range(12):
+            next_board[(x, y)] = -1
+    list = [-1, -1, -1, -1]
+    x = num + 1
+    index = 0
+    if num < 3:
+        list[0] = pieces[num + 1]
+        list[1] = pieces[num + 2]
+        list[2] = pieces[num + 3]
+        list[3] = pieces[num + 4]
+    else:
+        while x < 7:
+            list[index] = pieces[x]
+            index += 1
+            x += 1
+        x -= 7
+        while index < 4:
+            list[index] = next_seven[x]
+            index += 1
+            x += 1
+    next_board[(1, 0)] = list[0]
+    next_board[(1 + shapes[list[0]][0][0], 0 - shapes[list[0]][0][1])] = list[0]
+    next_board[(1 + shapes[list[0]][1][0], 0 - shapes[list[0]][1][1])] = list[0]
+    next_board[(1 + shapes[list[0]][2][0], 0 - shapes[list[0]][2][1])] = list[0]
+    next_board[(1, 3)] = list[1]
+    next_board[(1 + shapes[list[1]][0][0], 3 - shapes[list[1]][0][1])] = list[1]
+    next_board[(1 + shapes[list[1]][1][0], 3 - shapes[list[1]][1][1])] = list[1]
+    next_board[(1 + shapes[list[1]][2][0], 3 - shapes[list[1]][2][1])] = list[1]
+    next_board[(1, 6)] = list[2]
+    next_board[(1 + shapes[list[2]][0][0], 6 - shapes[list[2]][0][1])] = list[2]
+    next_board[(1 + shapes[list[2]][1][0], 6 - shapes[list[2]][1][1])] = list[2]
+    next_board[(1 + shapes[list[2]][2][0], 6 - shapes[list[2]][2][1])] = list[2]
+    next_board[(1, 9)] = list[3]
+    next_board[(1 + shapes[list[3]][0][0], 9 - shapes[list[3]][0][1])] = list[3]
+    next_board[(1 + shapes[list[3]][1][0], 9 - shapes[list[3]][1][1])] = list[3]
+    next_board[(1 + shapes[list[3]][2][0], 9 - shapes[list[3]][2][1])] = list[3]
+    #print(next_board)
+    for x in range(5):
+        for y in range(12):
+            index = int(next_board[(x, y)])
+            if index != -1:
+                pygame.draw.rect(surface, shape_colors[index],
+                                 (x * block_size + x_edge2 + 1 + block_size * 2, y * block_size + y_edge1 + 1, block_size - 1,
+                                  block_size - 1))
+
 def redrawWindow(surface):
     surface.fill((0, 0, 0))
     drawGrid(surface)
     draw_pieces()
     if hold != -1:
         hold_display()
+    next_display()
     pygame.display.update()
 
 def restart():
@@ -305,17 +358,19 @@ def check_line():
             break
 
 def main():
-    global current, flag, surface, lines, hold, pieces, num, piece_count, hold_check, board, backup_board, hold_board
+    global current, flag, surface, lines, hold, pieces, num, piece_count, hold_check, board, backup_board, hold_board, next_seven
     print("start")
     board = np.zeros((10, 20))
     backup_board = np.zeros((10, 20))
     hold_board = np.zeros((5, 4))
+    next_board = np.zeros((5, 12))
     piece_count = 0
     num = 0
     lines = 0
     hold_check = True
     flag = True
     pieces = piece_order()
+    next_seven = piece_order()
     current = Piece(pieces[num])
     hold = -1
     surface = pygame.display.set_mode((screen_width, screen_height))
@@ -326,6 +381,7 @@ def main():
     y_check = 0
     place_tick = 0
     while flag:
+        num = piece_count % 7
         clock.tick(100)
         tick += fall_speed
         if tick >= 10000:
@@ -347,10 +403,10 @@ def main():
                 for y in range(20):
                     backup_board[x][y] = board[x][y]
             piece_count += 1
-            num = piece_count % 7
             current = Piece(pieces[num])
             if num == 6:
-                pieces = piece_order()
+                pieces = next_seven
+                next_seven = piece_order()
 
 main_flag = True
 while main_flag:
