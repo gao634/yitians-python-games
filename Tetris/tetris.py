@@ -226,8 +226,10 @@ def piece_order():
         for piece in pieces:
             if num == piece:
                 repeat = False
+                break
         if repeat:
             pieces.append(num)
+        repeat = True
     return pieces
 
 
@@ -236,9 +238,7 @@ def main():
     piece_count = 0
     num = 0
     flag = True
-    print("0")
     pieces = piece_order()
-    print("1")
     current = Piece(pieces[num])
     surface = pygame.display.set_mode((screen_width, screen_height))
     clock = pygame.time.Clock()
