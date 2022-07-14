@@ -189,9 +189,9 @@ def hold_display():
         for y in range(4):
             hold_board[(x, y)] = 0
     hold_board[(1, 1)] = 1
-    hold_board[(1 + shapes[hold][0][0], 1 + shapes[hold][0][1])] = 1
-    hold_board[(1 + shapes[hold][1][0], 1 + shapes[hold][1][1])] = 1
-    hold_board[(1 + shapes[hold][2][0], 1 + shapes[hold][2][1])] = 1
+    hold_board[(1 + shapes[hold][0][0], 1 - shapes[hold][0][1])] = 1
+    hold_board[(1 + shapes[hold][1][0], 1 - shapes[hold][1][1])] = 1
+    hold_board[(1 + shapes[hold][2][0], 1 - shapes[hold][2][1])] = 1
     for x in range(5):
         for y in range(4):
             if hold_board[(x, y)] == 1:
