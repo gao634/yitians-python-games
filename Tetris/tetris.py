@@ -348,24 +348,26 @@ def input(piece):
                 key_lock[1] = 0
             if event.key == pygame.K_DOWN:
                 key_lock[2] = 0
-
+    move_wait = 30
+    move_speed = 4
+    drop_wait = 30
+    drop_speed = 3
     keys = pygame.key.get_pressed()
-    for key in keys:
-        if keys[pygame.K_LEFT]:
-            key_lock[0] += 1
-            if key_lock[0] >= 10000:
-                if key_lock[0] % 2000 == 0:
-                    piece.move_left()
-        if keys[pygame.K_RIGHT]:
-            key_lock[1] += 1
-            if key_lock[1] >= 10000:
-                if key_lock[1] % 2000 == 0:
-                    piece.move_right()
-        if keys[pygame.K_DOWN]:
-            key_lock[2] += 1
-            if key_lock[2] >= 10000:
-                if key_lock[2] % 1000 == 0:
-                    piece.soft_drop()
+    if keys[pygame.K_LEFT]:
+        key_lock[0] += 2
+        if key_lock[0] >= move_wait:
+            if key_lock[0] % move_speed == 0:
+                piece.move_left()
+    if keys[pygame.K_RIGHT]:
+        key_lock[1] += 2
+        if key_lock[1] >= move_wait:
+            if key_lock[1] % move_speed == 0:
+                piece.move_right()
+    if keys[pygame.K_DOWN]:
+        key_lock[2] += 2
+        if key_lock[2] >= drop_wait:
+            if key_lock[2] % drop_speed == 0:
+                piece.soft_drop()
 
 def draw_pieces():
     for x in range(10):
@@ -448,7 +450,7 @@ def main():
             y_check = current.y
             current.soft_drop()
             if current.y == y_check:
-                if place_tick >= 100:
+                if place_tick >= 50:
                     current.place()
                     place_tick = 0
             else:
