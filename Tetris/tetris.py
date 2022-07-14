@@ -315,7 +315,7 @@ def restart():
     flag = False
 
 def input(piece):
-    global flag, main_flag
+    global flag, main_flag, key_lock
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             flag = False
@@ -341,7 +341,31 @@ def input(piece):
                 piece.place()
             if event.key == pygame.K_r:
                 restart()
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_LEFT:
+                key_lock[0] = 0
+            if event.key == pygame.K_RIGHT:
+                key_lock[1] = 0
+            if event.key == pygame.K_DOWN:
+                key_lock[2] = 0
 
+    keys = pygame.key.get_pressed()
+    for key in keys:
+        if keys[pygame.K_LEFT]:
+            key_lock[0] += 1
+            if key_lock[0] >= 10000:
+                if key_lock[0] % 2000 == 0:
+                    piece.move_left()
+        if keys[pygame.K_RIGHT]:
+            key_lock[1] += 1
+            if key_lock[1] >= 10000:
+                if key_lock[1] % 2000 == 0:
+                    piece.move_right()
+        if keys[pygame.K_DOWN]:
+            key_lock[2] += 1
+            if key_lock[2] >= 10000:
+                if key_lock[2] % 1000 == 0:
+                    piece.soft_drop()
 
 def draw_pieces():
     for x in range(10):
@@ -392,7 +416,7 @@ def check_line():
             break
 
 def main():
-    global current, flag, surface, lines, hold, pieces, num, piece_count, hold_check, board, backup_board, hold_board, next_seven
+    global current, flag, surface, lines, hold, pieces, num, piece_count, hold_check, board, backup_board, hold_board, next_seven, key_lock
     print("start")
     board = np.zeros((10, 20))
     backup_board = np.zeros((10, 20))
@@ -414,6 +438,7 @@ def main():
     tick = 0
     y_check = 0
     place_tick = 0
+    key_lock = [0, 0, 0]
     while flag:
         num = piece_count % 7
         clock.tick(100)
