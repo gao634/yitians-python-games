@@ -113,7 +113,6 @@ class Piece(object):
         if not self.generation():
             self.right_turn()
 
-
     def right_turn(self):
         self.delete()
         placer = self.orientation[0]
@@ -122,6 +121,12 @@ class Piece(object):
         if not self.generation():
             self.left_turn()
 
+    def flip(self):
+        self.delete()
+        self.orientation[0] *= -1
+        self.orientation[1] *= -1
+        if not self.generation():
+            self.left_turn()
     def soft_drop(self):
         self.delete()
         self.y -= 1
@@ -191,12 +196,8 @@ def input(piece):
                 piece.left_turn()
             if event.key == pygame.K_d:
                 piece.right_turn()
-            if event.key == pygame.K_w:
-                piece.left_turn()
-                piece.left_turn()
             if event.key == pygame.K_s:
-                piece.right_turn()
-                piece.right_turn()
+                piece.flip()
             if event.key == pygame.K_LEFT:
                 piece.move_left()
             if event.key == pygame.K_RIGHT:
