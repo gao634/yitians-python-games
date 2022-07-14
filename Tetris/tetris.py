@@ -162,6 +162,7 @@ class Piece(object):
         self.generation()
 
 
+
 def drawGrid(surface):
     x = x_edge1
     y = y_edge1
@@ -183,6 +184,25 @@ def redrawWindow(surface):
     draw_pieces()
     pygame.display.update()
 
+def hold_display():
+
+
+def hold_piece():
+    global current, hold, pieces, piece_count, hold_check
+    if hold_check:
+        current.delete()
+        if hold == -1:
+            hold = current.shape_number
+            piece_count += 1
+            current = Piece(pieces[piece_count % 7])
+        else:
+            spacer = hold
+            hold = current.shape_number
+            current = Piece(spacer)
+    hold_check = False
+
+
+
 
 def input(piece):
     global flag
@@ -192,6 +212,8 @@ def input(piece):
             pygame.quit()
 
         if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_w:
+                hold_piece()
             if event.key == pygame.K_a:
                 piece.left_turn()
             if event.key == pygame.K_d:
@@ -257,13 +279,15 @@ def check_line():
             break
 
 def main():
-    global current, flag, surface, lines
+    global current, flag, surface, lines, hold, pieces, num, piece_count, hold_check
     piece_count = 0
     num = 0
     lines = 0
+    hold_check = True
     flag = True
     pieces = piece_order()
     current = Piece(pieces[num])
+    hold = -1
     surface = pygame.display.set_mode((screen_width, screen_height))
     clock = pygame.time.Clock()
     # print(board)
@@ -283,6 +307,7 @@ def main():
         input(current)
         if current.placed:
             check_line()
+            hold_check = True
             for x in range(10):
                 for y in range(20):
                     backup_board[x][y] = board[x][y]
