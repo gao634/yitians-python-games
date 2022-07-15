@@ -301,32 +301,33 @@ def next_display():
                                   block_size - 1))
 
 def shadow():
-    for x in range(10):
-        for y in range(20):
-            if board[x][y] == -1:
-                board[x][y] = 0
-    old_y = current.y
-    current.place()
-    current.delete()
-    current.placed = False
-    new_y = current.y
-    current.y = old_y
-    board[(current.x, new_y)] = -1
-    if current.orientation[0] == 0:
-        board[(
-            current.x + current.shape[0][0] * current.orientation[1], new_y + current.shape[0][1] * current.orientation[1])] = -1
-        board[(
-            current.x + current.shape[1][0] * current.orientation[1], new_y + current.shape[1][1] * current.orientation[1])] = -1
-        board[(
-            current.x + current.shape[2][0] * current.orientation[1], new_y + current.shape[2][1] * current.orientation[1])] = -1
-    else:
-        board[(
-            current.x + current.shape[0][1] * current.orientation[0], new_y - current.shape[0][0] * current.orientation[0])] = -1
-        board[(
-            current.x + current.shape[1][1] * current.orientation[0], new_y - current.shape[1][0] * current.orientation[0])] = -1
-        board[(
-            current.x + current.shape[2][1] * current.orientation[0], new_y - current.shape[2][0] * current.orientation[0])] = -1
-    current.generation()
+    if current.placed == False:
+        for x in range(10):
+            for y in range(20):
+                if board[x][y] == -1:
+                    board[x][y] = 0
+        old_y = current.y
+        current.place()
+        current.delete()
+        current.placed = False
+        new_y = current.y
+        current.y = old_y
+        board[(current.x, new_y)] = -1
+        if current.orientation[0] == 0:
+            board[(
+                current.x + current.shape[0][0] * current.orientation[1], new_y + current.shape[0][1] * current.orientation[1])] = -1
+            board[(
+                current.x + current.shape[1][0] * current.orientation[1], new_y + current.shape[1][1] * current.orientation[1])] = -1
+            board[(
+                current.x + current.shape[2][0] * current.orientation[1], new_y + current.shape[2][1] * current.orientation[1])] = -1
+        else:
+            board[(
+                current.x + current.shape[0][1] * current.orientation[0], new_y - current.shape[0][0] * current.orientation[0])] = -1
+            board[(
+                current.x + current.shape[1][1] * current.orientation[0], new_y - current.shape[1][0] * current.orientation[0])] = -1
+            board[(
+                current.x + current.shape[2][1] * current.orientation[0], new_y - current.shape[2][0] * current.orientation[0])] = -1
+        current.generation()
 
 def redrawWindow(surface):
     surface.fill((0, 0, 0))
@@ -407,7 +408,7 @@ def draw_pieces():
             if int(board[x][y]) >= 1:
                 draw_square(shape_colors[int(board[x][y]) - 1], x, 19 - y)
             if int(board[x][y]) == -1:
-                draw_square((150, 150, 150), x, 19 - y)
+                draw_square((100, 100, 100), x, 19 - y)
 
 
 def draw_square(color, x, y):
@@ -453,7 +454,6 @@ def check_line():
 
 def main():
     global current, flag, surface, lines, hold, pieces, num, piece_count, hold_check, board, backup_board, hold_board, next_seven, key_lock
-    print(board)
     board = np.zeros((10, 20))
     backup_board = np.zeros((10, 20))
     hold_board = np.zeros((5, 4))
@@ -480,15 +480,15 @@ def main():
         clock.tick(100)
         place_tick += 1
         tick += fall_speed
-        if tick >= 10000:
+        if current.y == y_check:
+            if place_tick >= 50:
+                current.place()
+                place_tick = 0
+        else:
+            place_tick = 0
+        if tick >= 8000:
             y_check = current.y
             current.soft_drop()
-            if current.y == y_check:
-                if place_tick >= 50:
-                    current.place()
-                    place_tick = 0
-            else:
-                place_tick = 0
             tick = 0
         redrawWindow(surface)
         input(current)
@@ -509,4 +509,4 @@ def main():
 main_flag = True
 while main_flag:
     main()
-print(lines)
+print(lines, "lines cleared")
