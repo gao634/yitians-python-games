@@ -345,7 +345,7 @@ def restart():
     flag = False
 
 def input(piece):
-    global flag, main_flag, key_lock
+    global flag, main_flag, key_lock, place_tick, stall_check
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             flag = False
@@ -359,14 +359,29 @@ def input(piece):
                 return
             if event.key == pygame.K_a:
                 piece.left_turn()
+                if stall_check < 10:
+                    place_tick -= 5
+                    stall_check += 1
             if event.key == pygame.K_d:
                 piece.right_turn()
+                if stall_check < 10:
+                    place_tick -= 5
+                    stall_check += 1
             if event.key == pygame.K_s:
                 piece.flip()
+                if stall_check < 10:
+                    place_tick -= 5
+                    stall_check += 1
             if event.key == pygame.K_LEFT:
                 piece.move_left()
+                if stall_check < 10:
+                    place_tick -= 5
+                    stall_check += 1
             if event.key == pygame.K_RIGHT:
                 piece.move_right()
+                if stall_check < 10:
+                    place_tick -= 5
+                    stall_check += 1
             if event.key == pygame.K_DOWN:
                 piece.soft_drop()
             if event.key == pygame.K_SPACE:
@@ -387,20 +402,23 @@ def input(piece):
     drop_speed = 3
     keys = pygame.key.get_pressed()
     if keys[pygame.K_LEFT]:
-        key_lock[0] += 2
-        if key_lock[0] >= move_wait:
-            if key_lock[0] % move_speed == 0:
-                piece.move_left()
+        if stall_check < 2:
+            key_lock[0] += 2
+            if key_lock[0] >= move_wait:
+                if key_lock[0] % move_speed == 0:
+                    piece.move_left()
     if keys[pygame.K_RIGHT]:
-        key_lock[1] += 2
-        if key_lock[1] >= move_wait:
-            if key_lock[1] % move_speed == 0:
-                piece.move_right()
+        if stall_check < 2:
+            key_lock[1] += 2
+            if key_lock[1] >= move_wait:
+                if key_lock[1] % move_speed == 0:
+                    piece.move_right()
     if keys[pygame.K_DOWN]:
-        key_lock[2] += 2
-        if key_lock[2] >= drop_wait:
-            if key_lock[2] % drop_speed == 0:
-                piece.soft_drop()
+        if stall_check < 2:
+            key_lock[2] += 2
+            if key_lock[2] >= drop_wait:
+                if key_lock[2] % drop_speed == 0:
+                    piece.soft_drop()
 
 def draw_pieces():
     for x in range(10):
@@ -457,13 +475,14 @@ def perfect_clear():
     check = True
     for x in range(10):
         for y in range(20):
-            if board[x][y] != 0 and board[x][y] != -1:
+            if board[x][y] != 0:
                 check = False
     if check:
-        print("Perfect Clear!")
+        print("Perfect Clear! x" + str(perfect_clears))
+        perfect_clears += 1
 
 def main():
-    global current, flag, surface, lines, hold, pieces, num, piece_count, hold_check, board, backup_board, hold_board, next_seven, key_lock, perfect_clears
+    global current, flag, surface, lines, hold, pieces, num, piece_count, hold_check, board, backup_board, hold_board, next_seven, key_lock, perfect_clears, place_tick, stall_check
     board = np.zeros((10, 20))
     backup_board = np.zeros((10, 20))
     hold_board = np.zeros((5, 4))
@@ -486,6 +505,7 @@ def main():
     place_tick = 0
     key_lock = [0, 0, 0]
     perfect_clears = 0
+    stall_check = 0
     while flag:
         num = piece_count % 7
         clock.tick(100)
@@ -493,19 +513,26 @@ def main():
         tick += fall_speed
         if current.y == y_check:
             if place_tick >= 50:
-                current.place()
+                print("bug")
+                current.placed = True
                 place_tick = 0
         else:
             place_tick = 0
+            stall_check = 0
         if tick >= 8000:
             y_check = current.y
             current.soft_drop()
+            if y_check > current.y:
+                place_tick = 0
+                stall_check = 0
             tick = 0
         redrawWindow(surface)
         input(current)
         if current.placed:
-            perfect_clear()
+            stall_check = 0
+            place_tick = 0
             check_line()
+            perfect_clear()
             hold_check = True
             fall_speed += 3
             for x in range(10):
