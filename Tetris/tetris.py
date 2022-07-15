@@ -52,7 +52,7 @@ class Piece(object):
         if y < 0 or y > 19:
             return False
         if flag:
-            if board[x, y] != 0:
+            if board[x, y] != 0 and board[x, y] != -1:
                 return False
         return True
 
@@ -300,6 +300,34 @@ def next_display():
                                  (x * block_size + x_edge2 + 1 + block_size * 2, y * block_size + y_edge1 + 1, block_size - 1,
                                   block_size - 1))
 
+def shadow():
+    for x in range(10):
+        for y in range(20):
+            if board[x][y] == -1:
+                board[x][y] = 0
+    old_y = current.y
+    current.place()
+    current.delete()
+    current.placed = False
+    new_y = current.y
+    current.y = old_y
+    board[(current.x, new_y)] = -1
+    if current.orientation[0] == 0:
+        board[(
+            current.x + current.shape[0][0] * current.orientation[1], new_y + current.shape[0][1] * current.orientation[1])] = -1
+        board[(
+            current.x + current.shape[1][0] * current.orientation[1], new_y + current.shape[1][1] * current.orientation[1])] = -1
+        board[(
+            current.x + current.shape[2][0] * current.orientation[1], new_y + current.shape[2][1] * current.orientation[1])] = -1
+    else:
+        board[(
+            current.x + current.shape[0][1] * current.orientation[0], new_y - current.shape[0][0] * current.orientation[0])] = -1
+        board[(
+            current.x + current.shape[1][1] * current.orientation[0], new_y - current.shape[1][0] * current.orientation[0])] = -1
+        board[(
+            current.x + current.shape[2][1] * current.orientation[0], new_y - current.shape[2][0] * current.orientation[0])] = -1
+    current.generation()
+
 def redrawWindow(surface):
     surface.fill((0, 0, 0))
     drawGrid(surface)
@@ -307,6 +335,7 @@ def redrawWindow(surface):
     if hold != -1:
         hold_display()
     next_display()
+    shadow()
     pygame.display.update()
 
 def restart():
@@ -375,8 +404,10 @@ def input(piece):
 def draw_pieces():
     for x in range(10):
         for y in range(20):
-            if (int(board[x][y]) - 1) != -1:
+            if int(board[x][y]) >= 1:
                 draw_square(shape_colors[int(board[x][y]) - 1], x, 19 - y)
+            if int(board[x][y]) == -1:
+                draw_square((150, 150, 150), x, 19 - y)
 
 
 def draw_square(color, x, y):
@@ -422,7 +453,7 @@ def check_line():
 
 def main():
     global current, flag, surface, lines, hold, pieces, num, piece_count, hold_check, board, backup_board, hold_board, next_seven, key_lock
-    print("start")
+    print(board)
     board = np.zeros((10, 20))
     backup_board = np.zeros((10, 20))
     hold_board = np.zeros((5, 4))
