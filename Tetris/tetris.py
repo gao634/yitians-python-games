@@ -452,8 +452,18 @@ def check_line():
             check_line()
             break
 
+def perfect_clear():
+    global perfect_clears
+    check = True
+    for x in range(10):
+        for y in range(20):
+            if board[x][y] != 0 and board[x][y] != -1:
+                check = False
+    if check:
+        print("Perfect Clear!")
+
 def main():
-    global current, flag, surface, lines, hold, pieces, num, piece_count, hold_check, board, backup_board, hold_board, next_seven, key_lock
+    global current, flag, surface, lines, hold, pieces, num, piece_count, hold_check, board, backup_board, hold_board, next_seven, key_lock, perfect_clears
     board = np.zeros((10, 20))
     backup_board = np.zeros((10, 20))
     hold_board = np.zeros((5, 4))
@@ -475,6 +485,7 @@ def main():
     y_check = 0
     place_tick = 0
     key_lock = [0, 0, 0]
+    perfect_clears = 0
     while flag:
         num = piece_count % 7
         clock.tick(100)
@@ -493,6 +504,7 @@ def main():
         redrawWindow(surface)
         input(current)
         if current.placed:
+            perfect_clear()
             check_line()
             hold_check = True
             fall_speed += 3
